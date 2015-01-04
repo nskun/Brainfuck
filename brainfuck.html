@@ -1,0 +1,54 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Brainfxxk</title>
+</head>
+<body>
+    <ul>
+          <li>
+              <p id="inc">&lt<input type="text"></p>
+              <p>ポインタをインクリメント</p>
+          </li>
+          <li>
+              <p id="dec">&gt<input type="text"></p>
+              <p>ポインタをデクリメント</p>
+          </li>
+          <li>
+              <p id="pinc">+<input type="text"></p>
+              <p>ポインタが指す値をインクリメント</p>
+          </li>
+          <li>
+              <p id="pdec">-<input type="text"></p>
+              <p>ポインタが指す値をデクリメント</p>
+          </li>
+          <li>
+              <p id="output">.<input type="text"></p>
+              <p>ポインタが指す値を出力に書き出す</p>
+          </li>
+          <li>
+              <p id="input">,<input type="text"></p>
+              <p>入力から1バイト読み込んで、ポインタが指す先に代入する</p>
+          </li>
+          <li>
+              <p id="start-jmp">[<input type="text"></p>
+              <p>ポインタが指す値が0なら対応する]の直後にジャンプする</p>
+          </li>
+          <li>
+              <p id="end-jmp">]<input type="text"></p>
+              <p>ポインタが指す値が0でないなら対応する[にジャンプする</p>
+          </li>
+    </ul>
+    <div>
+        <textarea id="PG"></textarea>
+        <input type="button" value="実行" onclick="execute()">
+    </div>
+    <div>
+        <input type="text" id="index">
+        <input type="button" value="変更" onclick="pointer()">
+    </div>
+    <div id="pointer"></div>
+    <p id="display"></p>
+
+    <script type="text/javascript" src="./brainfuck.js"></script>
+</body>
+</html>

@@ -24,6 +24,9 @@ function pointer() {
     document.getElementById("pointer").innerHTML= pointer;
 }
 
+/*
+* インクリメント
+*/
 function inc() {
 
 }

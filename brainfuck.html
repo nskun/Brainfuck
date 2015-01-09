@@ -39,12 +39,16 @@
           </li>
     </ul>
     <div>
-        <textarea id="PG"></textarea>
+        <textarea id="PG">ここにプログラムを書く</textarea>
         <input type="button" value="実行" onclick="execute()">
     </div>
     <div>
-        <input type="text" id="index">
-        <input type="button" value="変更" onclick="pointer()">
+        <input type="text" id="input-text" value="ここはinputで使用する中身">
+    </div>
+    <div>
+        <input type="text" id="index" value="ここはメモリの中身の表示個数の変更">
+        <input type="button" value="変更" onclick="chenge()">
+        <input type="button" value="初期化" onclick="init()">
     </div>
     <div id="pointer"></div>
     <p id="display"></p>

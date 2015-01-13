@@ -39,19 +39,20 @@
           </li>
     </ul>
     <div>
-        <textarea id="PG">ここにプログラムを書く</textarea>
-        <input type="button" value="実行" onclick="execute()">
+        <textarea id="brainfuck-programs">Brainfuckプログラム</textarea>
+        <input type="button" value="一度に実行" onclick="allStep(); displayReg();">
+        <input type="button" value="１ステップ実行" onclick="oneStep(); displayReg();">
     </div>
     <div>
-        <input type="text" id="input-text" value="ここはinputで使用する中身">
+        <input type="text" id="input-text" value="入力ストリーム">
     </div>
     <div>
         <input type="text" id="index" value="ここはメモリの中身の表示個数の変更">
-        <input type="button" value="変更" onclick="chenge()">
-        <input type="button" value="初期化" onclick="init()">
+        <input type="button" value="変更" onclick="chenge(); displayReg();">
+        <input type="button" value="初期化" onclick="init(); displayReg();">
     </div>
-    <div id="pointer"></div>
-    <p id="display"></p>
+    <div id="display-reg"></div>
+    <p id="output-text"></p>
 
     <script type="text/javascript" src="./brainfuck.js"></script>
 </body>

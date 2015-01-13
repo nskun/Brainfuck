@@ -1,37 +1,77 @@
-// 現在のIPの位置
-var ip = 0;
-// 現在の値
+// Brainfuckプログラムの参照
+var brainfuckPg = document.getElementById("brainfuck-programs");
+// TODO:未実装
+// インストラクションポインタ
+var ip;
+/*
+ * バイトの配列
+ * TODO:未実装
+ * ポインタを範囲外に遷移させるとエラーを吐く処理が必要？もしくは自動でpush_backする。
+ */
 var reg = new Array();
-// getcharの位置
+// データポインタ
+var dp = 0;
+// 入力のバイトストリームのポインタ
 var getcharPointer = 0;
-// input-textの参照を定義
+// 入力のバイトストリームの参照
 var inputText = document.getElementById("input-text");
+// TODO:未実装
+// 出力のバイトストリームの参照
+var outputText;
 
-init(100);
+// regを初期化する。初めはregの長さは100で初期化
+add(100);
+displayReg();
 
-function chenge() {
-
-}
-
-function init() {
-	// 初期化
+/*
+ * バイト配列をindexの数だけ追加する。
+ */
+function add(index) {
 	for (var i = 0; i < index; i++) {
-		reg[i]=0;
+		reg.push(0);
 	}
-    display();
 }
-
-function pointer() {
+/*
+ * 初期化ボタンを押したときの動作
+ * 現在のlengthで00に初期化する
+ */
+function init() {
+	for (var i = 0; i < reg.length; i++) {
+		reg[i] = 0;
+	}
+}
+/*
+ * 変更ボタンを押したときの動作
+ * 現在より長い場合は、コピー＋０追加
+ * 現在より短い場合は、切り捨て
+ */
+function chenge() {
 	// 入力された数
 	var index = document.getElementById("index").value;
-	display();
+	var i;
+
+	if (reg.length < index) { // 現在より長い場合
+		add(index - reg.length);
+	} else if (index < reg.length) { // 現在より短い場合
+		for (i = 0; i = reg.length - index; i++) {
+			reg.splice(reg.length - i,1);
+		}
+	}
 }
 
+/*
+ * 入力ストリームから１文字読む
+ * 入力ストリームのポインタを１進める
+ * @return 入力ストリームの１文字
+ */
 function getchar() {
 	return inputText.value.substr(getcharPointer++,1);
 }
 
-function display() {
+/*
+ * regの中を16進数2桁ですべて表示する。
+ */
+function displayReg() {
 	var pointer = "";
 	var i = 0;
 	for (var val in reg) {
@@ -39,44 +79,60 @@ function display() {
 		pointer+='<span id="' + i++ + '">' + $hex + '</span>\n';
 	}
 	// 表示する
-	document.getElementById("pointer").innerHTML = pointer;
+	document.getElementById("display-reg").innerHTML = pointer;
 }
 
 /*
- 実行
+ * 実行ボタンを押した時の動作
+ * TODO:未実装
+ * oneStepとallStepを押されたときの次の動作をどうするか確認する。
  */
-function execute() {
-	var PG = document.getElementById("PG").value;
-	// バリデーションチェック
-	// 実行
-	for (var i = 0; i < PG.length; i++) {
-		switch (PG[i].charAt(0)) {
-			case '<':
-				ip++;
-				break;
-			case '>':
-				ip--;
-				break;
-			case '+':
-				(reg[ip] == 255) ? reg[ip]=0 : reg[ip]++;
-				break;
-			case '-':
-				(reg[ip] == 0) ? reg[ip] = 255 : reg[ip]--;
-				break;
-			case '.': // output
-				var id = "pointer" + ip;
-				document.getElementById(id).innerHTML = reg[ip];
-				break;
-			case ',': // input
-				reg[ip] = getchar();
-				break;
-			//case '[':
-			//    start-jmp();
-			//    break;
-			//case ']':
-			//    end-jmp();
-			//    break;
-		}
+function execute(pg) {
+	switch (pg) {
+		case '<':
+			dp++;
+			break;
+		case '>':
+			dp--;
+			break;
+		case '+':
+			(reg[dp] == 255) ? reg[dp] = 0 : reg[dp]++;
+			break;
+		case '-':
+			(reg[dp] == 0) ? reg[dp] = 255 : reg[dp]--;
+			break;
+		case '.': // output TODO:動作確認まだ
+			var id = "pointer" + dp;
+			document.getElementById(id).innerHTML += reg[dp];
+			break;
+		case ',': // input
+			reg[dp] = getchar();
+			break;
+		//case '[':
+		//    start-jmp();
+		//    break;
+		//case ']':
+		//    end-jmp();
+		//    break;
 	}
-	display();
+
+}
+/*
+ * １文字ずつ実行する。
+ * TODO：動作確認まだ
+ */
+function oneStep() {
+	var PGtext= brainfuckPg.value;
+	execute(PGtext[ip++].charAt(0));
+}
+
+/*
+ * 全部実行する。
+ * TODO：動作確認まだ
+ */
+function allStep() {
+	var PGtext= brainfuckPg.value;
+	for (ip = 0; ip < PGtext.length; ip++) {
+		execute(PGtext[ip].charAt(0));
+	}
 }

@@ -46,6 +46,10 @@ function init() {
 	for (var i = 0; i < memory.length; i++) {
 		memory[i] = 0;
 	}
+    ip = 0;
+    dp = 0;
+    PGText = "";
+    PGHTML = "";
 }
 
 /*
@@ -80,15 +84,20 @@ function getchar() {
  * memoryの中を16進数2桁ですべて表示する。
  */
 function memoryDump() {
-	var pointer = "";
+	var pointer = '<br>';
 	var i = 0;
 	for (var val in memory) {
 		$hex = (memory[val] < 16) ? "0" + memory[val].toString(16) : memory[val].toString(16);
-		pointer+='<span id="m' + i++ + '">' + $hex + '</span>\n';
+		pointer += '<span id="m' + i++ + '">' + $hex + '</span>\n';
+        // 見やすくするためメモリを１０ごとに改行する
+        if((i % 10) == 0){
+            pointer += '<br>';
+        }
 	}
 	// 表示する
 	document.getElementById("memory-dump").innerHTML = pointer;
 }
+
 /*
  * dpを画面に表示する
  */
@@ -98,6 +107,7 @@ function displayDp(){
 		$("#m" + dp).css("background-color", "#FC6");
 	});
 }
+
 /*
  * ipを画面に表示する
  */
@@ -107,19 +117,27 @@ function displayIp(){
 		var iBef = "#i" + (ip - 1);
 		$(iBef).css("background-color", "#FFF");
 		$("#i" + ip).css("background-color", "#FC6");
+        // 命令数よりも大きい値を命令ポインタが示していた場合赤色にする。
+        if (PGText.length < ip){
+            $("#ip").css("background-color", "red");
+        } else if (ip <= PGText.length){
+            $("#ip").css("background-color", "");
+        }
 	});
 }
+
 /*
  * 読み込んだ命令を表示する。
  */
 function displayInstruction() {
 	document.getElementById("display-instruction").innerHTML = PGHTML;
 }
+
 /*
  * 実行ボタンを押した時の動作
  */
-function execute(pg) {
-	switch (pg) {
+function execute(c) {
+	switch (c) {
 		case '<':
 			dp++;
 			break;
@@ -133,20 +151,28 @@ function execute(pg) {
 			(memory[dp] == 0) ? memory[dp] = 255 : memory[dp]--;
 			break;
 		case '.': // output TODO:UTF16に対応させる。
-			document.getElementById("output-text").innerHTML += memory[dp];
+			document.getElementById("output-text").innerHTML += String.fromCharCode(memory[dp]);
 			break;
 		case ',': // input TODO:UTF16に対応させる。
 			memory[dp] = getchar();
 			break;
 		// TODO:未実装
-		// 鬼門だわ……。スタックで解決できそう。
+		// 鬼門だわ……。スタックで解決できそう?
 		// startStack 配列LIFOで対応する配列をひもづける。
 		case '[':
-			startJump[] = ip;
+            // ポインタが差す値が0なら
+            if (memory[dp] == 0){
+                //対応する]の直後にジャンプする
+
+            }
 			break;
 		case ']':
+            // ポインタの差す値が0でないなら
+            if (memory[dp] != 0){
+                // 対応する[の直後にジャンプする
+            }
 
-			break;
+                break;
 	}
 }
 
@@ -154,15 +180,15 @@ function execute(pg) {
  * 命令を読み込む
  */
 function getInstruction() {
-	var PGBuffer = brainfuckPg.value;
 	var i = 0;
 	PGText = brainfuckPg.value;
 	PGHTML = "";
-	for (var val in PGBuffer) {
-		PGHTML+='<span id="i' + i++ + '">' + PGBuffer[val] + '</span>\n';
+	for (var val in PGText) {
+		PGHTML+='<span id="i' + i++ + '">' + PGText[val] + '</span>\n';
 	}
 	ip=0;
 }
+
 /*
  * １文字ずつ実行する。
  */
@@ -174,8 +200,7 @@ function oneStep() {
  * 全部実行する。
  */
 function allStep() {
-	var PGtext = brainfuckPg.value;
-	for (ip = 0; ip < PGtext.length; ip++) {
-		execute(PGtext[ip].charAt(0));
+	while (ip < PGText.length) {
+        oneStep();
 	}
 }

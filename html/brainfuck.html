@@ -6,17 +6,17 @@
 </head>
 <body>
 <div>
-    <textarea id="brainfuck-programs" placeholder="Brainfuckプログラム"></textarea>
-    <input type="button" value="一度に実行" onclick="allStep(); memoryDump(); displayDp();">
+    <textarea id="brainfuck-programs" placeholder="Brainfuckプログラム">+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.</textarea>
+    <input type="button" value="一度に実行"     onclick="getInstruction(); displayInstruction(); allStep(); memoryDump(); displayDp(); displayIp();">
     <input type="button" value="１ステップ実行" onclick="oneStep(); memoryDump(); displayDp();displayIp();">
-    <input type="button" value="命令読み込み" onclick="getInstruction(); displayInstruction();displayIp();">
+    <input type="button" value="命令読み込み"   onclick="getInstruction(); displayInstruction(); displayIp();">
     <input type="button" value="自動ハローワールド（未実装）" onclick="">
 </div>
 <div>
     <input type="text" id="index" placeholder="メモリの表示個数">
     <input type="button" value="変更" onclick="chenge(); memoryDump();">
     <input type="button" value="初期化" onclick="init(); memoryDump();">
-    <input type="button" value="リセット(メモリをクリアします）" onclick="init(); memoryDump(); displayDp();">
+    <input type="button" value="リセット(メモリをクリアします）" onclick="init(); memoryDump(); displayInstruction(); displayDp(); displayIp();">
     <span id="dp">0</span><span id="ip">0</span>
 </div>
 <div id="display-instruction"></div>
@@ -26,30 +26,31 @@
     <span id="output-text"></span>
 </div>
 
+<span>命令は８個あるのでネタ言語を作る場合は最低３バイト用意すればよい</span>
     <ul>
           <li>
-              <p id="inc">&lt<input type="text" placeholder="ポインタをインクリメント"></p>
+              <p id="inc">&lt<input type="text" placeholder="ポインタをインクリメント" value="000"></p>
           </li>
           <li>
-              <p id="dec">&gt<input type="text" placeholder="ポインタをデクリメント"></p>
+              <p id="dec">&gt<input type="text" placeholder="ポインタをデクリメント"  value="001"></p>
           </li>
           <li>
-              <p id="pinc">+<input type="text" placeholder="ポインタが指す値をインクリメント"></p>
+              <p id="pinc">+<input type="text" placeholder="ポインタが指す値をインクリメント" value="010"></p>
           </li>
           <li>
-              <p id="pdec">-<input type="text" placeholder="ポインタが指す値をデクリメント"></p>
+              <p id="pdec">-<input type="text" placeholder="ポインタが指す値をデクリメント" value="011"></p>
           </li>
           <li>
-              <p id="output">.<input type="text" placeholder="ポインタが指す値を出力に書き出す"></p>
+              <p id="output">.<input type="text" placeholder="ポインタが指す値を出力に書き出す" value="100"></p>
           </li>
           <li>
-              <p id="input">,<input type="text" placeholder="入力から1バイト読み込んで、ポインタが指す先に代入する"></p>
+              <p id="input">,<input type="text" placeholder="入力から1バイト読み込んで、ポインタが指す先に代入する" value="101"></p>
           </li>
           <li>
-              <p id="start-jmp">[<input type="text" placeholder="ポインタが指す値が0なら対応する]の直後にジャンプする"></p>
+              <p id="start-jmp">[<input type="text" placeholder="ポインタが指す値が0なら対応する]の直後にジャンプする" value="110"></p>
           </li>
           <li>
-              <p id="end-jmp">]<input type="text" placeholder="ポインタが指す値が0でないなら対応する[にジャンプする"></p>
+              <p id="end-jmp">]<input type="text" placeholder="ポインタが指す値が0でないなら対応する[にジャンプする" value="111"></p>
           </li>
     </ul>
 

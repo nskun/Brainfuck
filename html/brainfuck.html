@@ -6,7 +6,7 @@
 </head>
 <body>
 <div>
-    <textarea id="brainfuck-programs" placeholder="Brainfuckプログラム">+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.</textarea>
+    <textarea id="brainfuck-programs" placeholder="Brainfuckプログラム">+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.</textarea>
     <input type="button" value="一度に実行"     onclick="getInstruction(); displayInstruction(); allStep(); memoryDump(); displayDp(); displayIp();">
     <input type="button" value="１ステップ実行" onclick="oneStep(); memoryDump(); displayDp();displayIp();">
     <input type="button" value="命令読み込み"   onclick="getInstruction(); displayInstruction(); displayIp();">
@@ -29,10 +29,10 @@
 <span>命令は８個あるのでネタ言語を作る場合は最低３バイト用意すればよい</span>
     <ul>
           <li>
-              <p id="inc">&lt<input type="text" placeholder="ポインタをインクリメント" value="000"></p>
+              <p id="inc">&gt<input type="text" placeholder="ポインタをインクリメント" value="000"></p>
           </li>
           <li>
-              <p id="dec">&gt<input type="text" placeholder="ポインタをデクリメント"  value="001"></p>
+              <p id="dec">&lt<input type="text" placeholder="ポインタをデクリメント"  value="001"></p>
           </li>
           <li>
               <p id="pinc">+<input type="text" placeholder="ポインタが指す値をインクリメント" value="010"></p>

@@ -1,5 +1,5 @@
-//TODO:メモリダンプが毎回新しく読み込まれているので更新されても１つだけ置き換えるようにする。
-
+//TODO:メモリダンプが毎回新しく読み込まれているので更新された場合ポインタの差す場所のみを置き換えるようにする。
+//TODO:ジャンプ命令の構文エラーを書く。
 // Brainfuckプログラムの参照
 var brainfuckPg = document.getElementById("brainfuck-programs");
 var PGText;
@@ -115,7 +115,7 @@ function displayIp(){
 	document.getElementById("ip").innerHTML = ip;
 	$(function(){
 		var iBef = "#i" + (ip - 1);
-		$(iBef).css("background-color", "#FFF");
+		$(iBef).css("background-color", "");
 		$("#i" + ip).css("background-color", "#FC6");
         // 命令数よりも大きい値を命令ポインタが示していた場合赤色にする。
         if (PGText.length < ip){
@@ -138,10 +138,10 @@ function displayInstruction() {
  */
 function execute(c) {
 	switch (c) {
-		case '<':
+		case '>':
 			dp++;
 			break;
-		case '>':
+		case '<':
 			dp--;
 			break;
 		case '+':
@@ -162,18 +162,51 @@ function execute(c) {
 		case '[':
             // ポインタが差す値が0なら
             if (memory[dp] == 0){
+                var jmpIndex = ip + 1;
+                alert(jmpIndex);
+                var jmp = 1;
                 //対応する]の直後にジャンプする
-
+                while(1) {
+                    if(PGText[jmpIndex] == '[') {
+                        jmp += 1;
+                    } else if (PGText[jmpIndex] == ']') {
+                        jmp -=1;
+                    }
+                    if (jmp == 0) {
+                        break;
+                    }
+                    jmpIndex++;
+                }
+                var iBef = "#i" + (ip - 1);
+                $(iBef).css("background-color", "");
+                ip = jmpIndex;
             }
 			break;
 		case ']':
             // ポインタの差す値が0でないなら
             if (memory[dp] != 0){
+                var jmpIndex = ip - 1;
+                var jmp = 1;
                 // 対応する[の直後にジャンプする
+                while(1) {
+                    if (PGText[jmpIndex] == '[') {
+                        jmp -= 1;
+                    } else if (PGText[jmpIndex] == ']') {
+                        jmp += 1;
+                    }
+                    if (jmp == 0) {
+                        break;
+                    }
+                    jmpIndex--;
+                }
+                var iBef = "#i" + (ip);
+                $(iBef).css("background-color", "");
+                ip = jmpIndex;
             }
 
                 break;
 	}
+    ip++;
 }
 
 /*
@@ -193,7 +226,7 @@ function getInstruction() {
  * １文字ずつ実行する。
  */
 function oneStep() {
-	execute(PGText[ip++]);
+	execute(PGText[ip]);
 }
 
 /*

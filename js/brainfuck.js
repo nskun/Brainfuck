@@ -31,6 +31,7 @@ function add(index) {
 		reg.push(0);
 	}
 }
+
 /*
  * 初期化ボタンを押したときの動作
  * 現在のlengthで00に初期化する
@@ -40,6 +41,7 @@ function init() {
 		reg[i] = 0;
 	}
 }
+
 /*
  * 変更ボタンを押したときの動作
  * 現在より長い場合は、コピー＋０追加
@@ -108,6 +110,9 @@ function execute(pg) {
 		case ',': // input
 			reg[dp] = getchar();
 			break;
+		// TODO:未実装
+		// 鬼門だわ……。スタックで解決できそう。
+		// startStack 配列LIFOで対応する配列をひもづける。
 		//case '[':
 		//    start-jmp();
 		//    break;
@@ -115,14 +120,15 @@ function execute(pg) {
 		//    end-jmp();
 		//    break;
 	}
-
 }
+
 /*
  * １文字ずつ実行する。
  * TODO：動作確認まだ
  */
 function oneStep() {
 	var PGtext= brainfuckPg.value;
+	ip=0;
 	execute(PGtext[ip++].charAt(0));
 }
 
@@ -135,4 +141,11 @@ function allStep() {
 	for (ip = 0; ip < PGtext.length; ip++) {
 		execute(PGtext[ip].charAt(0));
 	}
+}
+/*
+ * TODO:未実装
+ * ボタンをアクティブにする。
+ */
+function buttonActive() {
+
 }

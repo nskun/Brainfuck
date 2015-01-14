@@ -6,11 +6,11 @@
 </head>
 <body>
 <div>
-    <textarea id="brainfuck-programs" placeholder="Brainfuckプログラム">+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.</textarea>
+    <textarea id="brainfuck-programs" placeholder="Brainfuckプログラム"></textarea>
     <input type="button" value="一度に実行"     onclick="getInstruction(); displayInstruction(); allStep(); memoryDump(); displayDp(); displayIp();">
     <input type="button" value="１ステップ実行" onclick="oneStep(); memoryDump(); displayDp();displayIp();">
     <input type="button" value="命令読み込み"   onclick="getInstruction(); displayInstruction(); displayIp();">
-    <input type="button" value="自動ハローワールド（未実装）" onclick="">
+    <input type="button" value="自動ハローワールド" onclick="init(); auto();">
 </div>
 <div>
     <input type="text" id="index" placeholder="メモリの表示個数">

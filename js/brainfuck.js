@@ -20,7 +20,7 @@ var getcharPointer = 0;
 // 入力のバイトストリームの参照
 var inputText = document.getElementById("input-text");
 // 出力のバイトストリームの参照
-var outputText;
+var outputText = document.getElementById("output-text");
 // jump命令を格納する配列
 var startJump = new Array();
 
@@ -50,6 +50,9 @@ function init() {
     dp = 0;
     PGText = "";
     PGHTML = "";
+    inputText.value = "";
+    outputText.innerHTML = "";
+    brainfuckPg.innerHTML = "";
 }
 
 /*
@@ -77,7 +80,7 @@ function chenge() {
  * @return 入力ストリームの１文字
  */
 function getchar() {
-	return inputText.value.substr(getcharPointer++,1);
+	return inputText.value.substr(getcharPointer++,1).charCodeAt(0);
 }
 
 /*
@@ -151,7 +154,7 @@ function execute(c) {
 			(memory[dp] == 0) ? memory[dp] = 255 : memory[dp]--;
 			break;
 		case '.': // output TODO:UTF16に対応させる。
-			document.getElementById("output-text").innerHTML += String.fromCharCode(memory[dp]);
+            outputText.innerHTML += String.fromCharCode(memory[dp]);
 			break;
 		case ',': // input TODO:UTF16に対応させる。
 			memory[dp] = getchar();
@@ -236,4 +239,26 @@ function allStep() {
 	while (ip < PGText.length) {
         oneStep();
 	}
+}
+
+/*
+ * 自動ハローワールドボタンを押したときの動作
+ */
+function auto() {
+    var random =Math.floor( Math.random() * 100 ) % 4;
+    switch (random) {
+        case 0 :
+            brainfuckPg.innerHTML = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
+            break;
+        case 1 :
+            inputText.value = "Hello, world!";
+            brainfuckPg.innerHTML = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>';
+            break;
+        case 2 :
+            inputText.value = "Hello, world!";
+            brainfuckPg.innerHTML = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
+            break;
+        case 3 :
+            brainfuckPg.innerHTML = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
+    }
 }

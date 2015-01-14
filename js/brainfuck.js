@@ -1,11 +1,14 @@
+//TODO:メモリダンプが毎回新しく読み込まれているので更新されても１つだけ置き換えるようにする。
+
 // Brainfuckプログラムの参照
 var brainfuckPg = document.getElementById("brainfuck-programs");
 var PGText;
-// TODO:未実装
+var PGHTML;
+// TODO:命令とメモリをマウスでクリックすると次はそこから動くようにする。
 // インストラクションポインタ
 var ip;
 /*
- * バイトの配列
+ * メモリ（バイトの配列）
  * TODO:未実装
  * ポインタを範囲外に遷移させるとエラーを吐く処理が必要？もしくは自動でpush_backする。
  */
@@ -16,12 +19,13 @@ var dp = 0;
 var getcharPointer = 0;
 // 入力のバイトストリームの参照
 var inputText = document.getElementById("input-text");
-// TODO:未実装
 // 出力のバイトストリームの参照
 var outputText;
+// jump命令を格納する配列
+var startJump = new Array();
 
-// memoryを初期化する。初めはmemoryの長さは100で初期化
-add(100);
+// memoryを初期化する。
+add(50);
 memoryDump();
 displayDp();
 
@@ -80,7 +84,7 @@ function memoryDump() {
 	var i = 0;
 	for (var val in memory) {
 		$hex = (memory[val] < 16) ? "0" + memory[val].toString(16) : memory[val].toString(16);
-		pointer+='<span id="' + i++ + '">' + $hex + '</span>\n';
+		pointer+='<span id="m' + i++ + '">' + $hex + '</span>\n';
 	}
 	// 表示する
 	document.getElementById("memory-dump").innerHTML = pointer;
@@ -91,20 +95,28 @@ function memoryDump() {
 function displayDp(){
 	document.getElementById("dp").innerHTML = dp;
 	$(function(){
-		$("#" + dp).css("background-color", "#FC6");
+		$("#m" + dp).css("background-color", "#FC6");
 	});
-
 }
 /*
- * dpを画面に表示する
+ * ipを画面に表示する
  */
 function displayIp(){
 	document.getElementById("ip").innerHTML = ip;
+	$(function(){
+		var iBef = "#i" + (ip - 1);
+		$(iBef).css("background-color", "#FFF");
+		$("#i" + ip).css("background-color", "#FC6");
+	});
+}
+/*
+ * 読み込んだ命令を表示する。
+ */
+function displayInstruction() {
+	document.getElementById("display-instruction").innerHTML = PGHTML;
 }
 /*
  * 実行ボタンを押した時の動作
- * TODO:未実装
- * oneStepとallStepを押されたときの次の動作をどうするか確認する。
  */
 function execute(pg) {
 	switch (pg) {
@@ -129,12 +141,12 @@ function execute(pg) {
 		// TODO:未実装
 		// 鬼門だわ……。スタックで解決できそう。
 		// startStack 配列LIFOで対応する配列をひもづける。
-		//case '[':
-		//    start-jmp();
-		//    break;
-		//case ']':
-		//    end-jmp();
-		//    break;
+		case '[':
+			startJump[] = ip;
+			break;
+		case ']':
+
+			break;
 	}
 }
 
@@ -142,27 +154,27 @@ function execute(pg) {
  * 命令を読み込む
  */
 function getInstruction() {
+	var PGBuffer = brainfuckPg.value;
+	var i = 0;
 	PGText = brainfuckPg.value;
+	PGHTML = "";
+	for (var val in PGBuffer) {
+		PGHTML+='<span id="i' + i++ + '">' + PGBuffer[val] + '</span>\n';
+	}
 	ip=0;
 }
 /*
  * １文字ずつ実行する。
  */
 function oneStep() {
-	execute(PGText[ip++].charAt(0));
+	execute(PGText[ip++]);
 }
 
-/*
- * 読み込んだ命令を表示する。
- */
-function displayInstruction() {
-	document.getElementById("display-instruction").innerHTML = PGText;
-}
 /*
  * 全部実行する。
  */
 function allStep() {
-	PGtext = brainfuckPg.value;
+	var PGtext = brainfuckPg.value;
 	for (ip = 0; ip < PGtext.length; ip++) {
 		execute(PGtext[ip].charAt(0));
 	}

@@ -1,0 +1,21 @@
+/*
+ * ../html/brainfuck.html用
+ */
+#dp:before{
+    content: "データポインタ：";
+}#ip:before{
+     content: "インストラクションポインタ：";
+ }
+#output-text:before{
+    content: "出力ストリーム："
+}
+#brainfuck-programs{
+    width: 500px;
+    height: 100px;
+}
+#memory-dump:before{
+    content: "メモリダンプ：";
+}
+#display-instruction:before{
+    content: "読み込んだ命令：";
+}

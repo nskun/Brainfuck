@@ -1,5 +1,6 @@
 // Brainfuckプログラムの参照
 var brainfuckPg = document.getElementById("brainfuck-programs");
+var PGText;
 // TODO:未実装
 // インストラクションポインタ
 var ip;
@@ -8,7 +9,7 @@ var ip;
  * TODO:未実装
  * ポインタを範囲外に遷移させるとエラーを吐く処理が必要？もしくは自動でpush_backする。
  */
-var reg = new Array();
+var memory = new Array();
 // データポインタ
 var dp = 0;
 // 入力のバイトストリームのポインタ
@@ -19,16 +20,17 @@ var inputText = document.getElementById("input-text");
 // 出力のバイトストリームの参照
 var outputText;
 
-// regを初期化する。初めはregの長さは100で初期化
+// memoryを初期化する。初めはmemoryの長さは100で初期化
 add(100);
-displayReg();
+memoryDump();
+displayDp();
 
 /*
  * バイト配列をindexの数だけ追加する。
  */
 function add(index) {
 	for (var i = 0; i < index; i++) {
-		reg.push(0);
+		memory.push(0);
 	}
 }
 
@@ -37,8 +39,8 @@ function add(index) {
  * 現在のlengthで00に初期化する
  */
 function init() {
-	for (var i = 0; i < reg.length; i++) {
-		reg[i] = 0;
+	for (var i = 0; i < memory.length; i++) {
+		memory[i] = 0;
 	}
 }
 
@@ -52,11 +54,11 @@ function chenge() {
 	var index = document.getElementById("index").value;
 	var i;
 
-	if (reg.length < index) { // 現在より長い場合
-		add(index - reg.length);
-	} else if (index < reg.length) { // 現在より短い場合
-		for (i = 0; i = reg.length - index; i++) {
-			reg.splice(reg.length - i,1);
+	if (memory.length < index) { // 現在より長い場合
+		add(index - memory.length);
+	} else if (index < memory.length) { // 現在より短い場合
+		for (i = 0; i = memory.length - index; i++) {
+			memory.splice(memory.length - i,1);
 		}
 	}
 }
@@ -71,19 +73,34 @@ function getchar() {
 }
 
 /*
- * regの中を16進数2桁ですべて表示する。
+ * memoryの中を16進数2桁ですべて表示する。
  */
-function displayReg() {
+function memoryDump() {
 	var pointer = "";
 	var i = 0;
-	for (var val in reg) {
-		$hex = (reg[val] < 16) ? "0" + reg[val].toString(16) : reg[val].toString(16);
+	for (var val in memory) {
+		$hex = (memory[val] < 16) ? "0" + memory[val].toString(16) : memory[val].toString(16);
 		pointer+='<span id="' + i++ + '">' + $hex + '</span>\n';
 	}
 	// 表示する
-	document.getElementById("display-reg").innerHTML = pointer;
+	document.getElementById("memory-dump").innerHTML = pointer;
 }
+/*
+ * dpを画面に表示する
+ */
+function displayDp(){
+	document.getElementById("dp").innerHTML = dp;
+	$(function(){
+		$("#" + dp).css("background-color", "#FC6");
+	});
 
+}
+/*
+ * dpを画面に表示する
+ */
+function displayIp(){
+	document.getElementById("ip").innerHTML = ip;
+}
 /*
  * 実行ボタンを押した時の動作
  * TODO:未実装
@@ -98,17 +115,16 @@ function execute(pg) {
 			dp--;
 			break;
 		case '+':
-			(reg[dp] == 255) ? reg[dp] = 0 : reg[dp]++;
+			(memory[dp] == 255) ? memory[dp] = 0 : memory[dp]++;
 			break;
 		case '-':
-			(reg[dp] == 0) ? reg[dp] = 255 : reg[dp]--;
+			(memory[dp] == 0) ? memory[dp] = 255 : memory[dp]--;
 			break;
-		case '.': // output TODO:動作確認まだ
-			var id = "pointer" + dp;
-			document.getElementById(id).innerHTML += reg[dp];
+		case '.': // output TODO:UTF16に対応させる。
+			document.getElementById("output-text").innerHTML += memory[dp];
 			break;
-		case ',': // input
-			reg[dp] = getchar();
+		case ',': // input TODO:UTF16に対応させる。
+			memory[dp] = getchar();
 			break;
 		// TODO:未実装
 		// 鬼門だわ……。スタックで解決できそう。
@@ -123,29 +139,31 @@ function execute(pg) {
 }
 
 /*
+ * 命令を読み込む
+ */
+function getInstruction() {
+	PGText = brainfuckPg.value;
+	ip=0;
+}
+/*
  * １文字ずつ実行する。
- * TODO：動作確認まだ
  */
 function oneStep() {
-	var PGtext= brainfuckPg.value;
-	ip=0;
-	execute(PGtext[ip++].charAt(0));
+	execute(PGText[ip++].charAt(0));
 }
 
 /*
+ * 読み込んだ命令を表示する。
+ */
+function displayInstruction() {
+	document.getElementById("display-instruction").innerHTML = PGText;
+}
+/*
  * 全部実行する。
- * TODO：動作確認まだ
  */
 function allStep() {
-	var PGtext= brainfuckPg.value;
+	PGtext = brainfuckPg.value;
 	for (ip = 0; ip < PGtext.length; ip++) {
 		execute(PGtext[ip].charAt(0));
 	}
-}
-/*
- * TODO:未実装
- * ボタンをアクティブにする。
- */
-function buttonActive() {
-
 }

@@ -1,6 +1,8 @@
 // 画面読み込み時
 window.onload = function() {
 	add(50);
+    init();
+    memoryChenge.value = 50;
 	memoryDump();
 	displayDp();
 }
@@ -18,12 +20,17 @@ document.getElementById('init').onclick = function() {
 document.getElementById('memory-chenge').onclick = function() {
     chenge();
     memoryDump();
+    displayDp();
 }
 
 // Brainfuckプログラムのテキストエリアに対するボタン
 document.getElementById('go').onclick = function() {
     if (ip == 0) {
         getInstruction();
+        if (!isSyntax()) {
+            displayInstruction();
+            return;
+        }
         displayInstruction();
     }
     allStep();
@@ -34,6 +41,10 @@ document.getElementById('go').onclick = function() {
 document.getElementById('step').onclick = function() {
     if (ip == 0) {
         getInstruction();
+        if (!isSyntax()) {
+            displayInstruction();
+            return;
+        }
         displayInstruction();
     }
     oneStep();
@@ -44,4 +55,7 @@ document.getElementById('step').onclick = function() {
 document.getElementById('auto').onclick = function() {
     init();
     auto();
+    memoryDump();
+    displayDp();
+    displayIp();
 }

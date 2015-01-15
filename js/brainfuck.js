@@ -1,5 +1,4 @@
 //TODO:メモリダンプが毎回新しく読み込まれているので更新された場合ポインタの差す場所のみを置き換えるようにする。
-//TODO:ジャンプ命令の構文エラーを書く。
 //TODO:jQueryの.cssの操作は移植性の観点からするべきではないのでidを付与してレイアウトはcssで定義する。
 // Brainfuckプログラムの参照
 var brainfuckPg = document.getElementById('brainfuck-programs');
@@ -10,8 +9,7 @@ var PGHTML;
 var ip;
 /*
  * メモリ（バイトの配列）
- * TODO:未実装
- * ポインタを範囲外に遷移させるとエラーを吐く処理が必要？もしくは自動でpush_backする。
+ * TODO:ポインタを範囲外に遷移させると自動でpush_backする。
  */
 var memory = new Array();
 // データポインタ
@@ -24,6 +22,8 @@ var inputText = document.getElementById('input-text');
 var outputText = document.getElementById('output-text');
 // jump命令を格納する配列
 var startJump = new Array();
+// メモリ容量変更テキストボックスの参照
+var memoryChenge = document.getElementById('index');
 
 /*
  * バイト配列をindexの数だけ追加する。
@@ -59,7 +59,7 @@ function init() {
  */
 function chenge() {
 	// 入力された数
-	var index = document.getElementById('index').value;
+	var index = memoryChenge.value;
 	var i;
 
 	if (memory.length < index) { // 現在より長い場合
@@ -117,12 +117,6 @@ function displayIp(){
 		var iBef = '#i' + (ip - 1);
 		$(iBef).css('background-color', '');
 		$('#i' + ip).css('background-color', '#FC6');
-        // 命令数よりも大きい値を命令ポインタが示していた場合赤色にする。
-        if (PGText.length < ip){
-            $('#ip').css('background-color', 'red');
-        } else if (ip <= PGText.length){
-            $('#ip').css('background-color', '');
-        }
 	});
 }
 
@@ -211,18 +205,42 @@ function execute(c) {
 function getInstruction() {
 	var i = 0;
 	PGText = brainfuckPg.value;
-	PGHTML = "";
+	PGHTML = '';
 	for (var val in PGText) {
 		PGHTML+='<span id="i' + i++ + '">' + PGText[val] + '</span>\n';
 	}
 	ip=0;
 }
+/*
+ * 構文エラーをチェック
+ * [と]が同じ数だけあるか確認する。
+ * TODO:][と言うプログラムのとき考慮する
+ */
+function isSyntax() {
+    var jmp = 0;
+    for (var val in PGText) {
+        if (PGText[val] == '[') {
+            jmp++;
+        } else if (PGText[val] == ']'){
+            jmp--;
+        }
+    }
+    if (jmp == 0) {
+        return true;
+    } else {
+        PGHTML = '<span id="error">Syntax error!</span>';
+        return false;
+    }
+}
+
 
 /*
  * １文字ずつ実行する。
  */
 function oneStep() {
-	execute(PGText[ip]);
+    if (ip < PGText.length) {
+    	execute(PGText[ip]);
+    }
 }
 
 /*
@@ -230,7 +248,7 @@ function oneStep() {
  */
 function allStep() {
 	while (ip < PGText.length) {
-        oneStep();
+        execute(PGText[ip]);
 	}
 }
 
@@ -238,20 +256,20 @@ function allStep() {
  * 自動ハローワールドボタンを押したときの動作
  */
 function auto() {
-    var random =Math.floor( Math.random() * 100 ) % 4;
-    switch (random) {
-        case 0 :
-            brainfuckPg.value = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
-            break;
-        case 1 :
-            inputText.value = 'Hello, world!';
-            brainfuckPg.value = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.';
-            break;
-        case 2 :
-            inputText.value = 'Hello, world!';
-            brainfuckPg.value = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
-            break;
-        case 3 :
-            brainfuckPg.value = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
-    }
+	var random =Math.floor( Math.random() * 100 ) % 4;
+	switch (random) {
+		case 0 :
+			brainfuckPg.value = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
+			break;
+		case 1 :
+			inputText.value = 'Hello, world!';
+			brainfuckPg.value = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.';
+			break;
+		case 2 :
+			inputText.value = 'Hello, world!';
+			brainfuckPg.value = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
+			break;
+		case 3 :
+			brainfuckPg.value = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
+	}
 }

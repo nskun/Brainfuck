@@ -7,20 +7,19 @@
 <body>
 <div>
     <textarea id="brainfuck-programs" placeholder="Brainfuckプログラム"></textarea>
-    <input type="button" value="一度に実行"     onclick="getInstruction(); displayInstruction(); allStep(); memoryDump(); displayDp(); displayIp();">
-    <input type="button" value="１ステップ実行" onclick="oneStep(); memoryDump(); displayDp();displayIp();">
-    <input type="button" value="命令読み込み"   onclick="getInstruction(); displayInstruction(); displayIp();">
-    <input type="button" value="自動ハローワールド" onclick="init(); auto();">
+    <input type="button" id="go"   value="一度に実行">
+    <input type="button" id="step" value="１ステップ実行">
+    <input type="button" id="read" value="命令読み込み">
+    <input type="button" id="auto" value="自動ハローワールド">
 </div>
 <div>
-    <input type="text" id="index" placeholder="メモリの表示個数">
-    <input type="button" value="変更" onclick="chenge(); memoryDump();">
-    <input type="button" value="初期化" onclick="init(); memoryDump();">
-    <input type="button" value="リセット(メモリをクリアします）" onclick="init(); memoryDump(); displayInstruction(); displayDp(); displayIp();">
+    <input type="text"   id="index" placeholder="メモリの表示個数">
+    <input type="button" id="memory-chenge" value="メモリ容量変更">
+    <input type="button" id="init"          value="リセット">
     <span id="dp">0</span><span id="ip">0</span>
 </div>
 <div id="display-instruction"></div>
-<div id="memory-dump"></div>
+<div id="memory-dump"        ></div>
 <div>
     <input type="text" id="input-text" placeholder="入力ストリーム">
     <span id="output-text"></span>
@@ -57,5 +56,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script type="text/javascript" src="../js/brainfuck.js"></script>
+    <script type="text/javascript" src="../js/brainfuckButton.js"></script>
 </body>
 </html>

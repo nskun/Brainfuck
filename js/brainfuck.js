@@ -1,7 +1,8 @@
 //TODO:メモリダンプが毎回新しく読み込まれているので更新された場合ポインタの差す場所のみを置き換えるようにする。
 //TODO:ジャンプ命令の構文エラーを書く。
+//TODO:jQueryの.cssの操作は移植性の観点からするべきではないのでidを付与してレイアウトはcssで定義する。
 // Brainfuckプログラムの参照
-var brainfuckPg = document.getElementById("brainfuck-programs");
+var brainfuckPg = document.getElementById('brainfuck-programs');
 var PGText;
 var PGHTML;
 // TODO:命令とメモリをマウスでクリックすると次はそこから動くようにする。
@@ -18,16 +19,11 @@ var dp = 0;
 // 入力のバイトストリームのポインタ
 var getcharPointer = 0;
 // 入力のバイトストリームの参照
-var inputText = document.getElementById("input-text");
+var inputText = document.getElementById('input-text');
 // 出力のバイトストリームの参照
-var outputText = document.getElementById("output-text");
+var outputText = document.getElementById('output-text');
 // jump命令を格納する配列
 var startJump = new Array();
-
-// memoryを初期化する。
-add(50);
-memoryDump();
-displayDp();
 
 /*
  * バイト配列をindexの数だけ追加する。
@@ -46,13 +42,14 @@ function init() {
 	for (var i = 0; i < memory.length; i++) {
 		memory[i] = 0;
 	}
-    ip = 0;
-    dp = 0;
-    PGText = "";
-    PGHTML = "";
-    inputText.value = "";
-    outputText.innerHTML = "";
-    brainfuckPg.innerHTML = "";
+	ip = 0;
+	dp = 0;
+	PGText = '';
+	PGHTML = '';
+    getcharPointer = 0;
+	inputText.value = '';
+	outputText.innerHTML = '';
+	brainfuckPg.value = '';
 }
 
 /*
@@ -62,7 +59,7 @@ function init() {
  */
 function chenge() {
 	// 入力された数
-	var index = document.getElementById("index").value;
+	var index = document.getElementById('index').value;
 	var i;
 
 	if (memory.length < index) { // 現在より長い場合
@@ -90,7 +87,7 @@ function memoryDump() {
 	var pointer = '<br>';
 	var i = 0;
 	for (var val in memory) {
-		$hex = (memory[val] < 16) ? "0" + memory[val].toString(16) : memory[val].toString(16);
+		$hex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
 		pointer += '<span id="m' + i++ + '">' + $hex + '</span>\n';
         // 見やすくするためメモリを１０ごとに改行する
         if((i % 10) == 0){
@@ -98,16 +95,16 @@ function memoryDump() {
         }
 	}
 	// 表示する
-	document.getElementById("memory-dump").innerHTML = pointer;
+	document.getElementById('memory-dump').innerHTML = pointer;
 }
 
 /*
  * dpを画面に表示する
  */
 function displayDp(){
-	document.getElementById("dp").innerHTML = dp;
+	document.getElementById('dp').innerHTML = dp;
 	$(function(){
-		$("#m" + dp).css("background-color", "#FC6");
+		$('#m' + dp).css('background-color', '#FC6');
 	});
 }
 
@@ -117,14 +114,14 @@ function displayDp(){
 function displayIp(){
 	document.getElementById("ip").innerHTML = ip;
 	$(function(){
-		var iBef = "#i" + (ip - 1);
-		$(iBef).css("background-color", "");
-		$("#i" + ip).css("background-color", "#FC6");
+		var iBef = '#i' + (ip - 1);
+		$(iBef).css('background-color', '');
+		$('#i' + ip).css('background-color', '#FC6');
         // 命令数よりも大きい値を命令ポインタが示していた場合赤色にする。
         if (PGText.length < ip){
-            $("#ip").css("background-color", "red");
+            $('#ip').css('background-color', 'red');
         } else if (ip <= PGText.length){
-            $("#ip").css("background-color", "");
+            $('#ip').css('background-color', '');
         }
 	});
 }
@@ -133,7 +130,7 @@ function displayIp(){
  * 読み込んだ命令を表示する。
  */
 function displayInstruction() {
-	document.getElementById("display-instruction").innerHTML = PGHTML;
+	document.getElementById('display-instruction').innerHTML = PGHTML;
 }
 
 /*
@@ -180,8 +177,8 @@ function execute(c) {
                     }
                     jmpIndex++;
                 }
-                var iBef = "#i" + (ip - 1);
-                $(iBef).css("background-color", "");
+                var iBef = '#i' + (ip - 1);
+                $(iBef).css('background-color', '');
                 ip = jmpIndex;
             }
 			break;
@@ -202,8 +199,8 @@ function execute(c) {
                     }
                     jmpIndex--;
                 }
-                var iBef = "#i" + (ip);
-                $(iBef).css("background-color", "");
+                var iBef = '#i' + (ip);
+                $(iBef).css('background-color', '');
                 ip = jmpIndex;
             }
 
@@ -248,17 +245,17 @@ function auto() {
     var random =Math.floor( Math.random() * 100 ) % 4;
     switch (random) {
         case 0 :
-            brainfuckPg.innerHTML = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
+            brainfuckPg.value = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
             break;
         case 1 :
-            inputText.value = "Hello, world!";
-            brainfuckPg.innerHTML = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>';
+            inputText.value = 'Hello, world!';
+            brainfuckPg.value = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.';
             break;
         case 2 :
-            inputText.value = "Hello, world!";
-            brainfuckPg.innerHTML = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
+            inputText.value = 'Hello, world!';
+            brainfuckPg.value = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
             break;
         case 3 :
-            brainfuckPg.innerHTML = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
+            brainfuckPg.value = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
     }
 }

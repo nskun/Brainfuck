@@ -8,8 +8,8 @@ window.onload = function() {
 // 初期化
 document.getElementById('init').onclick = function() {
 	init();
-	memoryDump();
 	displayInstruction();
+    memoryDump();
 	displayDp();
 	displayIp();
 }
@@ -22,22 +22,23 @@ document.getElementById('memory-chenge').onclick = function() {
 
 // Brainfuckプログラムのテキストエリアに対するボタン
 document.getElementById('go').onclick = function() {
-    getInstruction();
-    displayInstruction();
+    if (ip == 0) {
+        getInstruction();
+        displayInstruction();
+    }
     allStep();
     memoryDump();
     displayDp();
     displayIp();
 }
 document.getElementById('step').onclick = function() {
+    if (ip == 0) {
+        getInstruction();
+        displayInstruction();
+    }
     oneStep();
     memoryDump();
     displayDp();
-    displayIp();
-}
-document.getElementById('read').onclick = function() {
-    getInstruction();
-    displayInstruction();
     displayIp();
 }
 document.getElementById('auto').onclick = function() {

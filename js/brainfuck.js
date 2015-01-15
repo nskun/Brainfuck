@@ -156,9 +156,6 @@ function execute(c) {
 		case ',': // input TODO:UTF16に対応させる。
 			memory[dp] = getchar();
 			break;
-		// TODO:未実装
-		// 鬼門だわ……。スタックで解決できそう?
-		// startStack 配列LIFOで対応する配列をひもづける。
 		case '[':
             // ポインタが差す値が0なら
             if (memory[dp] == 0){
@@ -203,8 +200,7 @@ function execute(c) {
                 $(iBef).css('background-color', '');
                 ip = jmpIndex;
             }
-
-                break;
+            break;
 	}
     ip++;
 }

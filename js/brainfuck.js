@@ -44,20 +44,12 @@ function init() {
 	}
 	ip = 0;
 	dp = 0;
-<<<<<<< HEAD
-	PGText = "";
-	PGHTML = "";
-	inputText.value = "";
-	outputText.innerHTML = "";
-	brainfuckPg.innerHTML = "";
-=======
 	PGText = '';
 	PGHTML = '';
     getcharPointer = 0;
 	inputText.value = '';
 	outputText.innerHTML = '';
 	brainfuckPg.value = '';
->>>>>>> origin/master
 }
 
 /*
@@ -122,21 +114,9 @@ function displayDp(){
 function displayIp(){
 	document.getElementById("ip").innerHTML = ip;
 	$(function(){
-<<<<<<< HEAD
-		var iBef = "#i" + (ip - 1);
-		$(iBef).css("background-color", "");
-		$("#i" + ip).css("background-color", "#FC6");
-		// 命令数よりも大きい値を命令ポインタが示していた場合赤色にする。
-		if (PGText.length < ip){
-			$("#ip").css("background-color", "red");
-		} else if (ip <= PGText.length){
-			$("#ip").css("background-color", "");
-		}
-=======
 		var iBef = '#i' + (ip - 1);
 		$(iBef).css('background-color', '');
 		$('#i' + ip).css('background-color', '#FC6');
->>>>>>> origin/master
 	});
 }
 
@@ -171,11 +151,9 @@ function execute(c) {
 			memory[dp] = getchar();
 			break;
 		case '[':
-<<<<<<< HEAD
 			// ポインタが差す値が0なら
 			if (memory[dp] == 0){
 				var jmpIndex = ip + 1;
-				alert(jmpIndex);
 				var jmp = 1;
 				//対応する]の直後にジャンプする
 				while(1) {
@@ -189,8 +167,8 @@ function execute(c) {
 					}
 					jmpIndex++;
 				}
-				var iBef = "#i" + (ip - 1);
-				$(iBef).css("background-color", "");
+				var iBef = '#i' + (ip - 1);
+				$(iBef).css('background-color', '');
 				ip = jmpIndex;
 			}
 			break;
@@ -211,57 +189,11 @@ function execute(c) {
 					}
 					jmpIndex--;
 				}
-				var iBef = "#i" + (ip);
-				$(iBef).css("background-color", "");
+				var iBef = '#i' + (ip);
+				$(iBef).css('background-color', '');
 				ip = jmpIndex;
 			}
 			break;
-=======
-            // ポインタが差す値が0なら
-            if (memory[dp] == 0){
-                var jmpIndex = ip + 1;
-                alert(jmpIndex);
-                var jmp = 1;
-                //対応する]の直後にジャンプする
-                while(1) {
-                    if(PGText[jmpIndex] == '[') {
-                        jmp += 1;
-                    } else if (PGText[jmpIndex] == ']') {
-                        jmp -=1;
-                    }
-                    if (jmp == 0) {
-                        break;
-                    }
-                    jmpIndex++;
-                }
-                var iBef = '#i' + (ip - 1);
-                $(iBef).css('background-color', '');
-                ip = jmpIndex;
-            }
-			break;
-		case ']':
-            // ポインタの差す値が0でないなら
-            if (memory[dp] != 0){
-                var jmpIndex = ip - 1;
-                var jmp = 1;
-                // 対応する[の直後にジャンプする
-                while(1) {
-                    if (PGText[jmpIndex] == '[') {
-                        jmp -= 1;
-                    } else if (PGText[jmpIndex] == ']') {
-                        jmp += 1;
-                    }
-                    if (jmp == 0) {
-                        break;
-                    }
-                    jmpIndex--;
-                }
-                var iBef = '#i' + (ip);
-                $(iBef).css('background-color', '');
-                ip = jmpIndex;
-            }
-            break;
->>>>>>> origin/master
 	}
 	ip++;
 }
@@ -315,11 +247,7 @@ function oneStep() {
  */
 function allStep() {
 	while (ip < PGText.length) {
-<<<<<<< HEAD
-		oneStep();
-=======
         execute(PGText[ip]);
->>>>>>> origin/master
 	}
 }
 
@@ -330,20 +258,6 @@ function auto() {
 	var random =Math.floor( Math.random() * 100 ) % 4;
 	switch (random) {
 		case 0 :
-<<<<<<< HEAD
-			brainfuckPg.innerHTML = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
-			break;
-		case 1 :
-			inputText.value = "Hello, world!";
-			brainfuckPg.innerHTML = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>';
-			break;
-		case 2 :
-			inputText.value = "Hello, world!";
-			brainfuckPg.innerHTML = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
-			break;
-		case 3 :
-			brainfuckPg.innerHTML = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
-=======
 			brainfuckPg.value = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
 			break;
 		case 1 :
@@ -356,6 +270,5 @@ function auto() {
 			break;
 		case 3 :
 			brainfuckPg.value = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
->>>>>>> origin/master
 	}
 }

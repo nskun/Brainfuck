@@ -5,7 +5,7 @@ Brainfuck系のネタ言語を作ろうとしてます。
 (作成中)
 
 #Output
-Hello World!
+Hello world!
 
 #参考サイト
 http://ja.wikipedia.org/wiki/Brainfuck

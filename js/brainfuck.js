@@ -1,7 +1,7 @@
 //TODO:メモリダンプが毎回新しく読み込まれているので更新された場合ポインタの差す場所のみを置き換えるようにする。
-//TODO:ジャンプ命令の構文エラーを書く。
+//TODO:jQueryの.cssの操作は移植性の観点からするべきではないのでidを付与してレイアウトはcssで定義する。
 // Brainfuckプログラムの参照
-var brainfuckPg = document.getElementById("brainfuck-programs");
+var brainfuckPg = document.getElementById('brainfuck-programs');
 var PGText;
 var PGHTML;
 // TODO:命令とメモリをマウスでクリックすると次はそこから動くようにする。
@@ -9,8 +9,7 @@ var PGHTML;
 var ip;
 /*
  * メモリ（バイトの配列）
- * TODO:未実装
- * ポインタを範囲外に遷移させるとエラーを吐く処理が必要？もしくは自動でpush_backする。
+ * TODO:ポインタを範囲外に遷移させると自動でpush_backする。
  */
 var memory = new Array();
 // データポインタ
@@ -18,16 +17,13 @@ var dp = 0;
 // 入力のバイトストリームのポインタ
 var getcharPointer = 0;
 // 入力のバイトストリームの参照
-var inputText = document.getElementById("input-text");
+var inputText = document.getElementById('input-text');
 // 出力のバイトストリームの参照
-var outputText = document.getElementById("output-text");
+var outputText = document.getElementById('output-text');
 // jump命令を格納する配列
 var startJump = new Array();
-
-// memoryを初期化する。
-add(50);
-memoryDump();
-displayDp();
+// メモリ容量変更テキストボックスの参照
+var memoryChenge = document.getElementById('index');
 
 /*
  * バイト配列をindexの数だけ追加する。
@@ -48,11 +44,20 @@ function init() {
 	}
 	ip = 0;
 	dp = 0;
+<<<<<<< HEAD
 	PGText = "";
 	PGHTML = "";
 	inputText.value = "";
 	outputText.innerHTML = "";
 	brainfuckPg.innerHTML = "";
+=======
+	PGText = '';
+	PGHTML = '';
+    getcharPointer = 0;
+	inputText.value = '';
+	outputText.innerHTML = '';
+	brainfuckPg.value = '';
+>>>>>>> origin/master
 }
 
 /*
@@ -62,7 +67,7 @@ function init() {
  */
 function chenge() {
 	// 入力された数
-	var index = document.getElementById("index").value;
+	var index = memoryChenge.value;
 	var i;
 
 	if (memory.length < index) { // 現在より長い場合
@@ -90,7 +95,7 @@ function memoryDump() {
 	var pointer = '<br>';
 	var i = 0;
 	for (var val in memory) {
-		$hex = (memory[val] < 16) ? "0" + memory[val].toString(16) : memory[val].toString(16);
+		$hex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
 		pointer += '<span id="m' + i++ + '">' + $hex + '</span>\n';
 		// 見やすくするためメモリを１０ごとに改行する
 		if((i % 10) == 0){
@@ -98,16 +103,16 @@ function memoryDump() {
 		}
 	}
 	// 表示する
-	document.getElementById("memory-dump").innerHTML = pointer;
+	document.getElementById('memory-dump').innerHTML = pointer;
 }
 
 /*
  * dpを画面に表示する
  */
 function displayDp(){
-	document.getElementById("dp").innerHTML = dp;
+	document.getElementById('dp').innerHTML = dp;
 	$(function(){
-		$("#m" + dp).css("background-color", "#FC6");
+		$('#m' + dp).css('background-color', '#FC6');
 	});
 }
 
@@ -117,6 +122,7 @@ function displayDp(){
 function displayIp(){
 	document.getElementById("ip").innerHTML = ip;
 	$(function(){
+<<<<<<< HEAD
 		var iBef = "#i" + (ip - 1);
 		$(iBef).css("background-color", "");
 		$("#i" + ip).css("background-color", "#FC6");
@@ -126,6 +132,11 @@ function displayIp(){
 		} else if (ip <= PGText.length){
 			$("#ip").css("background-color", "");
 		}
+=======
+		var iBef = '#i' + (ip - 1);
+		$(iBef).css('background-color', '');
+		$('#i' + ip).css('background-color', '#FC6');
+>>>>>>> origin/master
 	});
 }
 
@@ -133,7 +144,7 @@ function displayIp(){
  * 読み込んだ命令を表示する。
  */
 function displayInstruction() {
-	document.getElementById("display-instruction").innerHTML = PGHTML;
+	document.getElementById('display-instruction').innerHTML = PGHTML;
 }
 
 /*
@@ -159,10 +170,8 @@ function execute(c) {
 		case ',': // input TODO:UTF16に対応させる。
 			memory[dp] = getchar();
 			break;
-		// TODO:未実装
-		// 鬼門だわ……。スタックで解決できそう?
-		// startStack 配列LIFOで対応する配列をひもづける。
 		case '[':
+<<<<<<< HEAD
 			// ポインタが差す値が0なら
 			if (memory[dp] == 0){
 				var jmpIndex = ip + 1;
@@ -207,6 +216,52 @@ function execute(c) {
 				ip = jmpIndex;
 			}
 			break;
+=======
+            // ポインタが差す値が0なら
+            if (memory[dp] == 0){
+                var jmpIndex = ip + 1;
+                alert(jmpIndex);
+                var jmp = 1;
+                //対応する]の直後にジャンプする
+                while(1) {
+                    if(PGText[jmpIndex] == '[') {
+                        jmp += 1;
+                    } else if (PGText[jmpIndex] == ']') {
+                        jmp -=1;
+                    }
+                    if (jmp == 0) {
+                        break;
+                    }
+                    jmpIndex++;
+                }
+                var iBef = '#i' + (ip - 1);
+                $(iBef).css('background-color', '');
+                ip = jmpIndex;
+            }
+			break;
+		case ']':
+            // ポインタの差す値が0でないなら
+            if (memory[dp] != 0){
+                var jmpIndex = ip - 1;
+                var jmp = 1;
+                // 対応する[の直後にジャンプする
+                while(1) {
+                    if (PGText[jmpIndex] == '[') {
+                        jmp -= 1;
+                    } else if (PGText[jmpIndex] == ']') {
+                        jmp += 1;
+                    }
+                    if (jmp == 0) {
+                        break;
+                    }
+                    jmpIndex--;
+                }
+                var iBef = '#i' + (ip);
+                $(iBef).css('background-color', '');
+                ip = jmpIndex;
+            }
+            break;
+>>>>>>> origin/master
 	}
 	ip++;
 }
@@ -217,18 +272,42 @@ function execute(c) {
 function getInstruction() {
 	var i = 0;
 	PGText = brainfuckPg.value;
-	PGHTML = "";
+	PGHTML = '';
 	for (var val in PGText) {
 		PGHTML+='<span id="i' + i++ + '">' + PGText[val] + '</span>\n';
 	}
 	ip=0;
 }
+/*
+ * 構文エラーをチェック
+ * [と]が同じ数だけあるか確認する。
+ * TODO:][と言うプログラムのとき考慮する
+ */
+function isSyntax() {
+    var jmp = 0;
+    for (var val in PGText) {
+        if (PGText[val] == '[') {
+            jmp++;
+        } else if (PGText[val] == ']'){
+            jmp--;
+        }
+    }
+    if (jmp == 0) {
+        return true;
+    } else {
+        PGHTML = '<span id="error">Syntax error!</span>';
+        return false;
+    }
+}
+
 
 /*
  * １文字ずつ実行する。
  */
 function oneStep() {
-	execute(PGText[ip]);
+    if (ip < PGText.length) {
+    	execute(PGText[ip]);
+    }
 }
 
 /*
@@ -236,7 +315,11 @@ function oneStep() {
  */
 function allStep() {
 	while (ip < PGText.length) {
+<<<<<<< HEAD
 		oneStep();
+=======
+        execute(PGText[ip]);
+>>>>>>> origin/master
 	}
 }
 
@@ -247,6 +330,7 @@ function auto() {
 	var random =Math.floor( Math.random() * 100 ) % 4;
 	switch (random) {
 		case 0 :
+<<<<<<< HEAD
 			brainfuckPg.innerHTML = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
 			break;
 		case 1 :
@@ -259,5 +343,19 @@ function auto() {
 			break;
 		case 3 :
 			brainfuckPg.innerHTML = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
+=======
+			brainfuckPg.value = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
+			break;
+		case 1 :
+			inputText.value = 'Hello, world!';
+			brainfuckPg.value = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.';
+			break;
+		case 2 :
+			inputText.value = 'Hello, world!';
+			brainfuckPg.value = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
+			break;
+		case 3 :
+			brainfuckPg.value = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
+>>>>>>> origin/master
 	}
 }

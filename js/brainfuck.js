@@ -24,6 +24,8 @@ var outputText = document.getElementById('output-text');
 var startJump = new Array();
 // メモリ容量変更テキストボックスの参照
 var memoryChenge = document.getElementById('index');
+// メモリダンプの参照
+var memoryDumpPoint = document.getElementById('memory-dump');
 
 /*
  * バイト配列をindexの数だけ追加する。
@@ -84,18 +86,17 @@ function getchar() {
  * memoryの中を16進数2桁ですべて表示する。
  */
 function memoryDump() {
-	var pointer = '<br>';
+	memoryDumpPoint.innerHTML = '<br>';
+
 	var i = 0;
 	for (var val in memory) {
 		$hex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
-		pointer += '<span id="m' + i++ + '">' + $hex + '</span>\n';
+		memoryDumpPoint.innerHTML += '<span id="m' + i++ + '">' + $hex + '</span>\n';
 		// 見やすくするためメモリを１０ごとに改行する
 		if((i % 10) == 0){
-			pointer += '<br>';
+			memoryDumpPoint.innerHTML += '<br>';
 		}
 	}
-	// 表示する
-	document.getElementById('memory-dump').innerHTML = pointer;
 }
 
 /*
@@ -151,6 +152,7 @@ function execute(c) {
 			memory[dp] = getchar();
 			break;
 		case '[':
+			// TODO:動作確認すること
 			// ポインタが差す値が0なら
 			if (memory[dp] == 0){
 				var jmpIndex = ip + 1;
@@ -210,10 +212,12 @@ function getInstruction() {
 	}
 	ip=0;
 }
+
 /*
  * 構文エラーをチェック
  * [と]が同じ数だけあるか確認する。
  * TODO:][と言うプログラムのとき考慮する
+ * 前提としてPGTextが読み込んである時でないと動かない。
  */
 function isSyntax() {
     var jmp = 0;
@@ -231,7 +235,6 @@ function isSyntax() {
         return false;
     }
 }
-
 
 /*
  * １文字ずつ実行する。

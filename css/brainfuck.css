@@ -1,21 +1,48 @@
 /*
  * ../html/brainfuck.html用
  */
-#dp:before{
-    content: "データポインタ：";
-}#ip:before{
-     content: "インストラクションポインタ：";
+header {
+    background-color: orange;
+    color: black;
+}
+#hardware {
+    float: left;
+    width: 25%;
+}
+#exec {
+    float: left;
+    width: 50%;
+}
+#make {
+    float:right;
+    width: 25%;
+}
+footer {
+    background-color: #b3aba1;
+    width: 100%;
+    text-align: center;
+    clear: both;
+}
+#dp:before {
+	content: "データポインタ：";
+}#ip:before {
+	content: "インストラクションポインタ：";
  }
-#output-text:before{
-    content: "出力ストリーム："
+#output-text:before {
+	content: "出力ストリーム："
 }
-#brainfuck-programs{
-    width: 500px;
-    height: 100px;
+#brainfuck-programs {
+	width: 500px;
+	height: 100px;
 }
-#memory-dump:before{
-    content: "メモリダンプ：";
+span {
+    background-color: #cccccc;
 }
-#display-instruction:before{
-    content: "読み込んだ命令：";
+#memory-dump:before {
+	content: "メモリダンプ：";
+}
+#memory-dump {
+}
+#display-instruction:before {
+	content: "読み込んだ命令：";
 }

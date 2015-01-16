@@ -46,13 +46,13 @@ function init() {
 	for (var i = 0; i < memory.length; i++) {
 		memory[i] = 0;
 	}
-    ip = 0;
-    dp = 0;
-    PGText = "";
-    PGHTML = "";
-    inputText.value = "";
-    outputText.innerHTML = "";
-    brainfuckPg.innerHTML = "";
+	ip = 0;
+	dp = 0;
+	PGText = "";
+	PGHTML = "";
+	inputText.value = "";
+	outputText.innerHTML = "";
+	brainfuckPg.innerHTML = "";
 }
 
 /*
@@ -92,10 +92,10 @@ function memoryDump() {
 	for (var val in memory) {
 		$hex = (memory[val] < 16) ? "0" + memory[val].toString(16) : memory[val].toString(16);
 		pointer += '<span id="m' + i++ + '">' + $hex + '</span>\n';
-        // 見やすくするためメモリを１０ごとに改行する
-        if((i % 10) == 0){
-            pointer += '<br>';
-        }
+		// 見やすくするためメモリを１０ごとに改行する
+		if((i % 10) == 0){
+			pointer += '<br>';
+		}
 	}
 	// 表示する
 	document.getElementById("memory-dump").innerHTML = pointer;
@@ -120,12 +120,12 @@ function displayIp(){
 		var iBef = "#i" + (ip - 1);
 		$(iBef).css("background-color", "");
 		$("#i" + ip).css("background-color", "#FC6");
-        // 命令数よりも大きい値を命令ポインタが示していた場合赤色にする。
-        if (PGText.length < ip){
-            $("#ip").css("background-color", "red");
-        } else if (ip <= PGText.length){
-            $("#ip").css("background-color", "");
-        }
+		// 命令数よりも大きい値を命令ポインタが示していた場合赤色にする。
+		if (PGText.length < ip){
+			$("#ip").css("background-color", "red");
+		} else if (ip <= PGText.length){
+			$("#ip").css("background-color", "");
+		}
 	});
 }
 
@@ -154,7 +154,7 @@ function execute(c) {
 			(memory[dp] == 0) ? memory[dp] = 255 : memory[dp]--;
 			break;
 		case '.': // output TODO:UTF16に対応させる。
-            outputText.innerHTML += String.fromCharCode(memory[dp]);
+			outputText.innerHTML += String.fromCharCode(memory[dp]);
 			break;
 		case ',': // input TODO:UTF16に対応させる。
 			memory[dp] = getchar();
@@ -163,53 +163,52 @@ function execute(c) {
 		// 鬼門だわ……。スタックで解決できそう?
 		// startStack 配列LIFOで対応する配列をひもづける。
 		case '[':
-            // ポインタが差す値が0なら
-            if (memory[dp] == 0){
-                var jmpIndex = ip + 1;
-                alert(jmpIndex);
-                var jmp = 1;
-                //対応する]の直後にジャンプする
-                while(1) {
-                    if(PGText[jmpIndex] == '[') {
-                        jmp += 1;
-                    } else if (PGText[jmpIndex] == ']') {
-                        jmp -=1;
-                    }
-                    if (jmp == 0) {
-                        break;
-                    }
-                    jmpIndex++;
-                }
-                var iBef = "#i" + (ip - 1);
-                $(iBef).css("background-color", "");
-                ip = jmpIndex;
-            }
+			// ポインタが差す値が0なら
+			if (memory[dp] == 0){
+				var jmpIndex = ip + 1;
+				alert(jmpIndex);
+				var jmp = 1;
+				//対応する]の直後にジャンプする
+				while(1) {
+					if(PGText[jmpIndex] == '[') {
+						jmp += 1;
+					} else if (PGText[jmpIndex] == ']') {
+						jmp -=1;
+					}
+					if (jmp == 0) {
+						break;
+					}
+					jmpIndex++;
+				}
+				var iBef = "#i" + (ip - 1);
+				$(iBef).css("background-color", "");
+				ip = jmpIndex;
+			}
 			break;
 		case ']':
-            // ポインタの差す値が0でないなら
-            if (memory[dp] != 0){
-                var jmpIndex = ip - 1;
-                var jmp = 1;
-                // 対応する[の直後にジャンプする
-                while(1) {
-                    if (PGText[jmpIndex] == '[') {
-                        jmp -= 1;
-                    } else if (PGText[jmpIndex] == ']') {
-                        jmp += 1;
-                    }
-                    if (jmp == 0) {
-                        break;
-                    }
-                    jmpIndex--;
-                }
-                var iBef = "#i" + (ip);
-                $(iBef).css("background-color", "");
-                ip = jmpIndex;
-            }
-
-                break;
+			// ポインタの差す値が0でないなら
+			if (memory[dp] != 0){
+				var jmpIndex = ip - 1;
+				var jmp = 1;
+				// 対応する[の直後にジャンプする
+				while(1) {
+					if (PGText[jmpIndex] == '[') {
+						jmp -= 1;
+					} else if (PGText[jmpIndex] == ']') {
+						jmp += 1;
+					}
+					if (jmp == 0) {
+						break;
+					}
+					jmpIndex--;
+				}
+				var iBef = "#i" + (ip);
+				$(iBef).css("background-color", "");
+				ip = jmpIndex;
+			}
+			break;
 	}
-    ip++;
+	ip++;
 }
 
 /*
@@ -237,7 +236,7 @@ function oneStep() {
  */
 function allStep() {
 	while (ip < PGText.length) {
-        oneStep();
+		oneStep();
 	}
 }
 
@@ -245,20 +244,20 @@ function allStep() {
  * 自動ハローワールドボタンを押したときの動作
  */
 function auto() {
-    var random =Math.floor( Math.random() * 100 ) % 4;
-    switch (random) {
-        case 0 :
-            brainfuckPg.innerHTML = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
-            break;
-        case 1 :
-            inputText.value = "Hello, world!";
-            brainfuckPg.innerHTML = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>';
-            break;
-        case 2 :
-            inputText.value = "Hello, world!";
-            brainfuckPg.innerHTML = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
-            break;
-        case 3 :
-            brainfuckPg.innerHTML = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
-    }
+	var random =Math.floor( Math.random() * 100 ) % 4;
+	switch (random) {
+		case 0 :
+			brainfuckPg.innerHTML = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
+			break;
+		case 1 :
+			inputText.value = "Hello, world!";
+			brainfuckPg.innerHTML = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>';
+			break;
+		case 2 :
+			inputText.value = "Hello, world!";
+			brainfuckPg.innerHTML = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
+			break;
+		case 3 :
+			brainfuckPg.innerHTML = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
+	}
 }

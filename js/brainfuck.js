@@ -1,5 +1,6 @@
 //TODO:メモリダンプが毎回新しく読み込まれているので更新された場合ポインタの差す場所のみを置き換えるようにする。
 //TODO:jQueryの.cssの操作は移植性の観点からするべきではないのでidを付与してレイアウトはcssで定義する。
+//TODO:メモリが範囲を超えたときはエラーを出す
 // Brainfuckプログラムの参照
 var brainfuckPg = document.getElementById('brainfuck-programs');
 var PGText;
@@ -11,17 +12,15 @@ var ip;
  * メモリ（バイトの配列）
  * TODO:ポインタを範囲外に遷移させると自動でpush_backする。
  */
-var memory = new Array();
+var memory = [];
 // データポインタ
 var dp = 0;
 // 入力のバイトストリームのポインタ
-var getcharPointer = 0;
+var getCharPointer = 0;
 // 入力のバイトストリームの参照
 var inputText = document.getElementById('input-text');
 // 出力のバイトストリームの参照
 var outputText = document.getElementById('output-text');
-// jump命令を格納する配列
-var startJump = new Array();
 // メモリ容量変更テキストボックスの参照
 var memoryChenge = document.getElementById('index');
 // メモリダンプの参照
@@ -48,7 +47,7 @@ function init() {
 	dp = 0;
 	PGText = '';
 	PGHTML = '';
-    getcharPointer = 0;
+    getCharPointer = 0;
 	inputText.value = '';
 	outputText.innerHTML = '';
 	brainfuckPg.value = '';
@@ -78,8 +77,8 @@ function chenge() {
  * 入力ストリームのポインタを１進める
  * @return 入力ストリームの１文字
  */
-function getchar() {
-	return inputText.value.substr(getcharPointer++,1).charCodeAt(0);
+function getChar() {
+	return inputText.value.substr(getCharPointer++,1).charCodeAt(0);
 }
 
 /*
@@ -87,11 +86,12 @@ function getchar() {
  */
 function memoryDump() {
 	memoryDumpPoint.innerHTML = '<br>';
+    var hex;
 
 	var i = 0;
 	for (var val in memory) {
-		$hex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
-		memoryDumpPoint.innerHTML += '<span id="m' + i++ + '">' + $hex + '</span>\n';
+		hex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
+		memoryDumpPoint.innerHTML += '<span id="m' + i++ + '">' + hex + '</span>\n';
 		// 見やすくするためメモリを１０ごとに改行する
 		if((i % 10) == 0){
 			memoryDumpPoint.innerHTML += '<br>';
@@ -149,7 +149,7 @@ function execute(c) {
 			outputText.innerHTML += String.fromCharCode(memory[dp]);
 			break;
 		case ',': // input TODO:UTF16に対応させる。
-			memory[dp] = getchar();
+			memory[dp] = getChar();
 			break;
 		case '[':
 			// TODO:動作確認すること
@@ -211,29 +211,6 @@ function getInstruction() {
 		PGHTML+='<span id="i' + i++ + '">' + PGText[val] + '</span>\n';
 	}
 	ip=0;
-}
-
-/*
- * 構文エラーをチェック
- * [と]が同じ数だけあるか確認する。
- * TODO:][と言うプログラムのとき考慮する
- * 前提としてPGTextが読み込んである時でないと動かない。
- */
-function isSyntax() {
-    var jmp = 0;
-    for (var val in PGText) {
-        if (PGText[val] == '[') {
-            jmp++;
-        } else if (PGText[val] == ']'){
-            jmp--;
-        }
-    }
-    if (jmp == 0) {
-        return true;
-    } else {
-        PGHTML = '<span id="error">Syntax error!</span>';
-        return false;
-    }
 }
 
 /*

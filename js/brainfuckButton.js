@@ -27,10 +27,6 @@ document.getElementById('memory-chenge').onclick = function() {
 document.getElementById('go').onclick = function() {
 	if (ip == 0) {
 		getInstruction();
-		if (!isSyntax()) {
-			displayInstruction();
-			return;
-		}
 		displayInstruction();
 	}
 	allStep();
@@ -41,10 +37,6 @@ document.getElementById('go').onclick = function() {
 document.getElementById('step').onclick = function() {
 	if (ip == 0) {
 		getInstruction();
-		if (!isSyntax()) {
-			displayInstruction();
-			return;
-		}
 		displayInstruction();
 	}
 	oneStep();

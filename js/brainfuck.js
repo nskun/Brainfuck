@@ -85,18 +85,15 @@ function getChar() {
  * memoryの中を16進数2桁ですべて表示する。
  */
 function memoryDump() {
-	memoryDumpPoint.innerHTML = '<br>';
-    var hex;
-
+	memoryDumpPoint.create('ul');
+	var hex;
+	alert(memoryDumpPoint.innerHTML);
 	var i = 0;
 	for (var val in memory) {
 		hex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
-		memoryDumpPoint.innerHTML += '<span id="m' + i++ + '">' + hex + '</span>\n';
-		// 見やすくするためメモリを１０ごとに改行する
-		if((i % 10) == 0){
-			memoryDumpPoint.innerHTML += '<br>';
-		}
+		memoryDumpPoint.innerHTML += '<li id="m' + i++ + '">' + hex + '</li>\n';
 	}
+	alert(memoryDumpPoint.innerHTML);
 }
 
 /*

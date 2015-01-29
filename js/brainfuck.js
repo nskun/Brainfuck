@@ -85,15 +85,24 @@ function getChar() {
  * memoryの中を16進数2桁ですべて表示する。
  */
 function memoryDump() {
-	memoryDumpPoint.create('ul');
-	var hex;
-	alert(memoryDumpPoint.innerHTML);
-	var i = 0;
-	for (var val in memory) {
-		hex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
-		memoryDumpPoint.innerHTML += '<li id="m' + i++ + '">' + hex + '</li>\n';
+	// ulを定義
+	var elementUl = document.createElement('ul');
+	elementUl.style.backgroundColor = '#35862E';
+	// liを定義
+	{
+		var hex; // 16進数メモリを格納する一時
+		var i = 0; // カウンタ
+		var df = document.createDocumentFragment();
+		for (var val in memory) {
+			hex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
+			var elementLi = document.createElement('li');
+			elementLi.appendChild(document.createTextNode(hex));
+			elementLi.id = 'm' + i++;
+			df.appendChild(elementLi);
+		}
 	}
-	alert(memoryDumpPoint.innerHTML);
+	// 要素を追加
+	memoryDumpPoint.appendChild(elementUl).appendChild(df);
 }
 
 /*

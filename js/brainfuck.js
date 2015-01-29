@@ -85,6 +85,10 @@ function getChar() {
  * memoryの中を16進数2桁ですべて表示する。
  */
 function memoryDump() {
+	// 削除する
+	for (var sakujoIndex =memoryDumpPoint.childNodes.length-1; sakujoIndex>=0; sakujoIndex--) {
+		memoryDumpPoint.removeChild(memoryDumpPoint.childNodes[sakujoIndex]);
+	}
 	// ulを定義
 	var elementUl = document.createElement('ul');
 	elementUl.style.backgroundColor = '#35862E';

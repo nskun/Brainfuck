@@ -35,10 +35,24 @@ footer {
 	width: 500px;
 	height: 100px;
 }
-#memory-dump:before {
-	content: "メモリダンプ：";
+#display-instruction:before {
+    content: "読み込んだ命令：";
 }
-#memory-dump li{
+#display-instruction ul li{
+    margin: 0;
+    padding: 0;
+    display: block;
+    float:left;
+    list-style: none;
+    width: 10px;
+}
+#memory-dump:before {
+    content: "メモリダンプ：";
+}
+#memory-dump{
+    clear: both;
+}
+#memory-dump ul li{
     margin: 0;
     padding: 0;
     display: block;
@@ -46,9 +60,7 @@ footer {
     list-style: none;
     width: 20px;
 }
-#display-instruction:before {
-	content: "読み込んだ命令：";
-}
+
 .current {
     background-color: #FC6;
 }

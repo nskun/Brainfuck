@@ -2,8 +2,8 @@
 //TODO:メモリが範囲を超えたときはエラーを出す
 // Brainfuckプログラムの参照
 var brainfuckPg = document.getElementById('brainfuck-programs');
+var displayPrograms = document.getElementById('display-instruction');
 var PGText;
-var PGHTML;
 // TODO:命令とメモリをマウスでクリックすると次はそこから動くようにする。
 // インストラクションポインタ
 var ip;
@@ -45,7 +45,6 @@ function init() {
 	ip = 0;
 	dp = 0;
 	PGText = '';
-	PGHTML = '';
     getCharPointer = 0;
 	inputText.value = '';
 	outputText.innerHTML = '';
@@ -75,6 +74,7 @@ function chenge() {
  * 入力ストリームから１文字読む
  * 入力ストリームのポインタを１進める
  * @return 入力ストリームの１文字
+ * todo:NaN対策
  */
 function getChar() {
 	return inputText.value.substr(getCharPointer++,1).charCodeAt(0);
@@ -82,12 +82,15 @@ function getChar() {
 
 /*
  * memoryの中を16進数2桁ですべて表示する。
+ * ul要素、li要素で定義している。
+ * memoryの中身をいったん削除してから配列に入っているメモリを全部読み込む。
  */
 function memoryDump() {
-	// 削除する
+	// 削除処理
 	for (var sakujoIndex =memoryDumpPoint.childNodes.length-1; sakujoIndex>=0; sakujoIndex--) {
 		memoryDumpPoint.removeChild(memoryDumpPoint.childNodes[sakujoIndex]);
 	}
+
 	// ulを定義
 	var elementUl = document.createElement('ul');
 	// liを定義
@@ -113,7 +116,7 @@ function memoryDump() {
 function displayDp(){
 	document.getElementById('dp').innerHTML = dp;
 	$(function(){
-		$('#m' + dp).attr('class', "current");
+		$('#m' + dp).addClass('current');
 
 	});
 }
@@ -125,8 +128,8 @@ function displayIp(){
 	document.getElementById("ip").innerHTML = ip;
 	$(function(){
 		var iBef = '#i' + (ip - 1);
-		$(iBef).attr('class', '');
-		$('#i' + ip).attr('class', 'current');
+		$(iBef).removeClass('current');
+		$('#i' + ip).addClass('current');
 	});
 }
 
@@ -134,7 +137,24 @@ function displayIp(){
  * 読み込んだ命令を表示する。
  */
 function displayInstruction() {
-	document.getElementById('display-instruction').innerHTML = PGHTML;
+    // 削除処理
+    for (var sakujoIndex =displayPrograms.childNodes.length-1; sakujoIndex>=0; sakujoIndex--) {
+        displayPrograms.removeChild(displayPrograms.childNodes[sakujoIndex]);
+    }
+    // ulを定義
+    var elementUl = document.createElement('ul');
+    // liを定義
+    var i = 0; // カウンタ
+    var df = document.createDocumentFragment();
+    for (var val in PGText) {
+        var elementLi = document.createElement('li');
+        elementLi.appendChild(document.createTextNode(PGText[val]));
+        elementLi.id = 'i' + i++;
+        df.appendChild(elementLi);
+    }
+    // 要素を追加
+    displayPrograms.appendChild(elementUl).appendChild(df);
+    ip=0;
 }
 
 /*
@@ -179,7 +199,7 @@ function execute(c) {
 					jmpIndex++;
 				}
 				var iBef = '#i' + (ip - 1);
-				$(iBef).attr('class', '');
+				$(iBef).removeClass('current');
 				ip = jmpIndex;
 			}
 			break;
@@ -201,7 +221,7 @@ function execute(c) {
 					jmpIndex--;
 				}
 				var iBef = '#i' + (ip);
-                $(iBef).attr('class', '');
+                $(iBef).removeClass('current');
 				ip = jmpIndex;
 			}
 			break;
@@ -213,13 +233,7 @@ function execute(c) {
  * 命令を読み込む
  */
 function getInstruction() {
-	var i = 0;
 	PGText = brainfuckPg.value;
-	PGHTML = '';
-	for (var val in PGText) {
-		PGHTML+='<span id="i' + i++ + '">' + PGText[val] + '</span>\n';
-	}
-	ip=0;
 }
 
 /*

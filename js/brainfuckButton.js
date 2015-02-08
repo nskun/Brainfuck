@@ -1,8 +1,8 @@
 // 画面読み込み時
 window.onload = function() {
-	add(50);
+	add(20);
 	init();
-	memoryChenge.value = 50;
+	memoryChenge.value = 20;
 	memoryDump();
 	displayDp();
 };

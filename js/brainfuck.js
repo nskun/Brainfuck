@@ -1,5 +1,4 @@
 //TODO:メモリダンプが毎回新しく読み込まれているので更新された場合ポインタの差す場所のみを置き換えるようにする。
-//TODO:jQueryの.cssの操作は移植性の観点からするべきではないのでidを付与してレイアウトはcssで定義する。
 //TODO:メモリが範囲を超えたときはエラーを出す
 // Brainfuckプログラムの参照
 var brainfuckPg = document.getElementById('brainfuck-programs');
@@ -91,16 +90,15 @@ function memoryDump() {
 	}
 	// ulを定義
 	var elementUl = document.createElement('ul');
-	elementUl.style.backgroundColor = '#35862E';
 	// liを定義
 	{
-		var hex; // 16進数メモリを格納する一時
+		var tmpHex; // 16進数メモリを一時格納する
 		var i = 0; // カウンタ
 		var df = document.createDocumentFragment();
 		for (var val in memory) {
-			hex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
+            tmpHex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
 			var elementLi = document.createElement('li');
-			elementLi.appendChild(document.createTextNode(hex));
+			elementLi.appendChild(document.createTextNode(tmpHex));
 			elementLi.id = 'm' + i++;
 			df.appendChild(elementLi);
 		}
@@ -115,7 +113,8 @@ function memoryDump() {
 function displayDp(){
 	document.getElementById('dp').innerHTML = dp;
 	$(function(){
-		$('#m' + dp).css('background-color', '#FC6');
+		$('#m' + dp).attr('class', "current");
+
 	});
 }
 
@@ -126,8 +125,8 @@ function displayIp(){
 	document.getElementById("ip").innerHTML = ip;
 	$(function(){
 		var iBef = '#i' + (ip - 1);
-		$(iBef).css('background-color', '');
-		$('#i' + ip).css('background-color', '#FC6');
+		$(iBef).attr('class', '');
+		$('#i' + ip).attr('class', 'current');
 	});
 }
 
@@ -180,7 +179,7 @@ function execute(c) {
 					jmpIndex++;
 				}
 				var iBef = '#i' + (ip - 1);
-				$(iBef).css('background-color', '');
+				$(iBef).attr('class', '');
 				ip = jmpIndex;
 			}
 			break;
@@ -202,7 +201,7 @@ function execute(c) {
 					jmpIndex--;
 				}
 				var iBef = '#i' + (ip);
-				$(iBef).css('background-color', '');
+                $(iBef).attr('class', '');
 				ip = jmpIndex;
 			}
 			break;

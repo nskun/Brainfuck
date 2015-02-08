@@ -18,7 +18,7 @@ header {
     width: 25%;
 }
 footer {
-    background-color: #b3aba1;
+    background-color: #ffaba1;
     width: 100%;
     text-align: center;
     clear: both;
@@ -35,14 +35,20 @@ footer {
 	width: 500px;
 	height: 100px;
 }
-span {
-    background-color: #cccccc;
-}
 #memory-dump:before {
 	content: "メモリダンプ：";
 }
-#memory-dump {
+#memory-dump li{
+    margin: 0;
+    padding: 0;
+    display: block;
+    float:left;
+    list-style: none;
+    width: 20px;
 }
 #display-instruction:before {
 	content: "読み込んだ命令：";
+}
+.current {
+    background-color: #FC6;
 }

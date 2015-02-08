@@ -5,6 +5,7 @@ window.onload = function() {
 	memoryChenge.value = 20;
 	memoryDump();
 	displayDp();
+	displayCurrentPointer();
 };
 
 // 初期化
@@ -14,54 +15,72 @@ document.getElementById('init').onclick = function() {
 	memoryDump();
 	displayDp();
 	displayIp();
+	displayCurrentPointer();
 };
 
 // メモリの容量の変更
 document.getElementById('memory-chenge').onclick = function() {
-	chenge();
+    memoryCapacityChenge();
 	memoryDump();
 	displayDp();
+	displayCurrentPointer();
 };
 
 // Brainfuckプログラムのテキストエリアに対するボタン
+/*
+ * 全部実行する。
+ */
 document.getElementById('go').onclick = function() {
-    // ipが0だったら新しく命令を読み込む。
+	// ipが0だったら新しく命令を読み込む。
 	if (ip == 0) {
 		getInstruction();
 		displayInstruction();
-        memoryDump();
+		memoryDump();
 	}
-    try {
-    	allStep();
-    } catch(e) {
-        alert(e);
-        return;
-    }
-    memoryDumpUpdate();
+	try {
+		while (ip < PGText.length) {
+			removeCurrentPointer();
+			execute(PGText[ip]);
+			memoryDumpUpdate();
+			displayCurrentPointer();
+		}
+	} catch(e) {
+		alert(e);
+		return;
+	}
 	displayDp();
 	displayIp();
 };
+/*
+ * １文字ずつ実行する。
+ */
 document.getElementById('step').onclick = function() {
-    // ipが0だったら新しく命令を読み込む。
-    if (ip == 0) {
+	// ipが0だったら新しく命令を読み込む。
+	if (ip == 0) {
 		getInstruction();
 		displayInstruction();
-        memoryDump();
+		memoryDump();
 	}
-    try {
-        oneStep();
-    } catch(e) {
-        alert(e);
-        return;
-    }
-    memoryDumpUpdate();
+	try {
+		if (ip < PGText.length) {
+			removeCurrentPointer();
+			execute(PGText[ip]);
+			memoryDumpUpdate();
+			displayCurrentPointer();
+		}
+	} catch(e) {
+		alert(e);
+		return;
+	}
 	displayDp();
 	displayIp();
 };
 document.getElementById('auto').onclick = function() {
+	removeCurrentPointer();
 	init();
 	auto();
 	memoryDump();
 	displayDp();
 	displayIp();
+	displayCurrentPointer();
 };

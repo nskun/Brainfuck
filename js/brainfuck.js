@@ -8,7 +8,6 @@ var ip;
 /*
  * メモリ（バイトの配列）
  * TODO:ポインタを範囲外に遷移させると自動でpush_backする。
- * TODO:メモリが範囲を超えたときはエラーを出す
  */
 var memory = [];
 // データポインタ
@@ -44,10 +43,10 @@ function init() {
 	ip = 0;
 	dp = 0;
 	PGText = '';
-    getCharPointer = 0;
+	getCharPointer = 0;
 	inputText.value = '';
 	outputText.innerHTML = '';
-    programsForm.value = '';
+	programsForm.value = '';
 }
 
 /*
@@ -55,7 +54,7 @@ function init() {
  * 現在より長い場合は、コピー＋０追加
  * 現在より短い場合は、切り捨て
  */
-function chenge() {
+function memoryCapacityChenge() {
 	// 入力された数
 	var index = memoryChenge.value;
 	var i;
@@ -75,10 +74,10 @@ function chenge() {
  * @return 入力ストリームの１文字
  */
 function getChar() {
-    if (Number.isNaN(inputText.value.substr(getCharPointer,1).charCodeAt(0))) {
-        throw new Error("入力文字列のポインタの外に移動しました");
-    }
-    return inputText.value.substr(getCharPointer++,1).charCodeAt(0);
+	if (Number.isNaN(inputText.value.substr(getCharPointer,1).charCodeAt(0))) {
+		throw new Error("入力文字列のポインタの外に移動しました");
+	}
+	return inputText.value.substr(getCharPointer++,1).charCodeAt(0);
 }
 
 /*
@@ -94,14 +93,14 @@ function memoryDump() {
 
 	// ulを定義
 	var elementUl = document.createElement('ul');
-    elementUl.id = 'memory-li';
+	elementUl.id = 'memory-li';
 	// liを定義
 	{
 		var tmpHex; // 16進数メモリを一時格納する
 		var i = 0; // カウンタ
 		var df = document.createDocumentFragment();
 		for (var val in memory) {
-            tmpHex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
+			tmpHex = (memory[val] < 16) ? '0' + memory[val].toString(16) : memory[val].toString(16);
 			var elementLi = document.createElement('li');
 			elementLi.appendChild(document.createTextNode(tmpHex));
 			elementLi.id = 'm' + i++;
@@ -115,51 +114,56 @@ function memoryDump() {
  * 更新されたメモリを表示する
  */
 function memoryDumpUpdate() {
-    document.getElementById("memory-li").childNodes[dp].innerHTML = (memory[dp] < 16) ? '0' + memory[dp].toString(16) : memory[dp].toString(16);
+	document.getElementById("memory-li").childNodes[dp].innerHTML = (memory[dp] < 16) ? '0' + memory[dp].toString(16) : memory[dp].toString(16);
 }
-
-/*
- * dpを画面に表示する
- */
-function displayDp(){
-	document.getElementById('dp').innerHTML = dp;
-    // 現在場所を示すための処理
-    $('#m' + dp).addClass('current');
-}
-
 /*
  * ipを画面に表示する
  */
 function displayIp(){
 	document.getElementById("ip").innerHTML = ip;
-    // 現在場所を示すための処理
-    var iBef = '#i' + (ip - 1);
-    $(iBef).removeClass('current');
-    $('#i' + ip).addClass('current');
 }
-
+/*
+ * dpを画面に表示する
+ */
+function displayDp(){
+	document.getElementById('dp').innerHTML = dp;
+}
+/*
+ * ip、dpを現在位置を削除する
+ */
+function removeCurrentPointer() {
+	$('#i' + ip).removeClass('current');
+	$('#m' + dp).removeClass('current');
+}
+/*
+ * ip、dpの現在位置を表示する
+ */
+function displayCurrentPointer() {
+	$('#i' + ip).addClass('current');
+	$('#m' + dp).addClass('current');
+}
 /*
  * 読み込んだ命令を表示する。
  */
 function displayInstruction() {
-    // 削除処理
-    for (var sakujoIndex =displayPrograms.childNodes.length-1; sakujoIndex>=0; sakujoIndex--) {
-        displayPrograms.removeChild(displayPrograms.childNodes[sakujoIndex]);
-    }
-    // ulを定義
-    var elementUl = document.createElement('ul');
-    // liを定義
-    var i = 0; // カウンタ
-    var df = document.createDocumentFragment();
-    for (var val in PGText) {
-        var elementLi = document.createElement('li');
-        elementLi.appendChild(document.createTextNode(PGText[val]));
-        elementLi.id = 'i' + i++;
-        df.appendChild(elementLi);
-    }
-    // 要素を追加
-    displayPrograms.appendChild(elementUl).appendChild(df);
-    ip=0;
+	// 削除処理
+	for (var sakujoIndex =displayPrograms.childNodes.length-1; sakujoIndex>=0; sakujoIndex--) {
+		displayPrograms.removeChild(displayPrograms.childNodes[sakujoIndex]);
+	}
+	// ulを定義
+	var elementUl = document.createElement('ul');
+	// liを定義
+	var i = 0; // カウンタ
+	var df = document.createDocumentFragment();
+	for (var val in PGText) {
+		var elementLi = document.createElement('li');
+		elementLi.appendChild(document.createTextNode(PGText[val]));
+		elementLi.id = 'i' + i++;
+		df.appendChild(elementLi);
+	}
+	// 要素を追加
+	displayPrograms.appendChild(elementUl).appendChild(df);
+	ip=0;
 }
 
 /*
@@ -168,10 +172,18 @@ function displayInstruction() {
 function execute(c) {
 	switch (c) {
 		case '>':
-			dp++;
+			if (memory.length <= dp + 1) {
+				throw new Error("メモリの範囲外に移動しました。");
+			} else {
+				dp++;
+			}
 			break;
 		case '<':
-			dp--;
+			if (dp - 1 < 0) {
+				throw new Error("メモリの範囲外に移動しました。");
+			} else {
+				dp--;
+			}
 			break;
 		case '+':
 			(memory[dp] == 255) ? memory[dp] = 0 : memory[dp]++;
@@ -203,8 +215,6 @@ function execute(c) {
 					}
 					jmpIndex++;
 				}
-				var iBef = '#i' + (ip - 1);
-				$(iBef).removeClass('current');
 				ip = jmpIndex;
 			}
 			break;
@@ -225,8 +235,6 @@ function execute(c) {
 					}
 					jmpIndex--;
 				}
-				var iBef = '#i' + (ip);
-                $(iBef).removeClass('current');
 				ip = jmpIndex;
 			}
 			break;
@@ -242,41 +250,23 @@ function getInstruction() {
 }
 
 /*
- * １文字ずつ実行する。
- */
-function oneStep() {
-    if (ip < PGText.length) {
-    	execute(PGText[ip]);
-    }
-}
-
-/*
- * 全部実行する。
- */
-function allStep() {
-	while (ip < PGText.length) {
-        execute(PGText[ip]);
-	}
-}
-
-/*
  * 自動ハローワールドボタンを押したときの動作
  */
 function auto() {
 	var random =Math.floor( Math.random() * 100 ) % 4;
 	switch (random) {
 		case 0 :
-            programsForm.value = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
+			programsForm.value = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
 			break;
 		case 1 :
 			inputText.value = 'Hello, world!';
-            programsForm.value = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.';
+			programsForm.value = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.';
 			break;
 		case 2 :
 			inputText.value = 'Hello, world!';
-            programsForm.value = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
+			programsForm.value = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
 			break;
 		case 3 :
-            programsForm.value = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
+			programsForm.value = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
 	}
 }

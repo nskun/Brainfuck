@@ -25,22 +25,36 @@ document.getElementById('memory-chenge').onclick = function() {
 
 // Brainfuckプログラムのテキストエリアに対するボタン
 document.getElementById('go').onclick = function() {
+    // ipが0だったら新しく命令を読み込む。
 	if (ip == 0) {
 		getInstruction();
 		displayInstruction();
+        memoryDump();
 	}
-	allStep();
-	memoryDump();
+    try {
+    	allStep();
+    } catch(e) {
+        alert(e);
+        return;
+    }
+    memoryDumpUpdate();
 	displayDp();
 	displayIp();
 };
 document.getElementById('step').onclick = function() {
-	if (ip == 0) {
+    // ipが0だったら新しく命令を読み込む。
+    if (ip == 0) {
 		getInstruction();
 		displayInstruction();
+        memoryDump();
 	}
-	oneStep();
-	memoryDump();
+    try {
+        oneStep();
+    } catch(e) {
+        alert(e);
+        return;
+    }
+    memoryDumpUpdate();
 	displayDp();
 	displayIp();
 };

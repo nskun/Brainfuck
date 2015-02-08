@@ -2,20 +2,20 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" type="text/css" href="../css/brainfuck.css">
-    <title>Brainfxxk</title>
+    <title>Brainfuck</title>
 </head>
 <body>
     <header>
         <h1>Brainfuck Interpreter</h1>
     </header>
     <div id="hardware">
-        <div id="display-instruction"></div>
+        <div id="display-programs"></div>
         <div id="memory-dump"        ></div>
         <p><input type="text" id="input-text" placeholder="入力ストリーム"></p>
         <p id="output-text"></p>
     </div>
     <div id="exec">
-        <textarea id="brainfuck-programs" placeholder="Brainfuckプログラム"></textarea>
+        <textarea id="programs-form" placeholder="プログラムをここに記述"></textarea>
         <input type="button" id="go"   value="一度に実行">
         <input type="button" id="step" value="１ステップ実行">
         <input type="button" id="auto" value="自動ハローワールド">

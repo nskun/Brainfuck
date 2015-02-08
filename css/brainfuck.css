@@ -31,14 +31,14 @@ footer {
 #output-text:before {
 	content: "出力ストリーム："
 }
-#brainfuck-programs {
+#programs-form {
 	width: 500px;
 	height: 100px;
 }
-#display-instruction:before {
+#display-programs:before {
     content: "読み込んだ命令：";
 }
-#display-instruction ul li{
+#display-programs ul li{
     margin: 0;
     padding: 0;
     display: block;

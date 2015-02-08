@@ -1,8 +1,6 @@
-//TODO:メモリダンプが毎回新しく読み込まれているので更新された場合ポインタの差す場所のみを置き換えるようにする。
-//TODO:メモリが範囲を超えたときはエラーを出す
 // Brainfuckプログラムの参照
-var brainfuckPg = document.getElementById('brainfuck-programs');
-var displayPrograms = document.getElementById('display-instruction');
+var programsForm = document.getElementById('programs-form');
+var displayPrograms = document.getElementById('display-programs');
 var PGText;
 // TODO:命令とメモリをマウスでクリックすると次はそこから動くようにする。
 // インストラクションポインタ
@@ -10,6 +8,7 @@ var ip;
 /*
  * メモリ（バイトの配列）
  * TODO:ポインタを範囲外に遷移させると自動でpush_backする。
+ * TODO:メモリが範囲を超えたときはエラーを出す
  */
 var memory = [];
 // データポインタ
@@ -48,7 +47,7 @@ function init() {
     getCharPointer = 0;
 	inputText.value = '';
 	outputText.innerHTML = '';
-	brainfuckPg.value = '';
+    programsForm.value = '';
 }
 
 /*
@@ -74,10 +73,12 @@ function chenge() {
  * 入力ストリームから１文字読む
  * 入力ストリームのポインタを１進める
  * @return 入力ストリームの１文字
- * todo:NaN対策
  */
 function getChar() {
-	return inputText.value.substr(getCharPointer++,1).charCodeAt(0);
+    if (Number.isNaN(inputText.value.substr(getCharPointer,1).charCodeAt(0))) {
+        throw new Error("入力文字列のポインタの外に移動しました");
+    }
+    return inputText.value.substr(getCharPointer++,1).charCodeAt(0);
 }
 
 /*
@@ -93,6 +94,7 @@ function memoryDump() {
 
 	// ulを定義
 	var elementUl = document.createElement('ul');
+    elementUl.id = 'memory-li';
 	// liを定義
 	{
 		var tmpHex; // 16進数メモリを一時格納する
@@ -109,16 +111,20 @@ function memoryDump() {
 	// 要素を追加
 	memoryDumpPoint.appendChild(elementUl).appendChild(df);
 }
+/*
+ * 更新されたメモリを表示する
+ */
+function memoryDumpUpdate() {
+    document.getElementById("memory-li").childNodes[dp].innerHTML = (memory[dp] < 16) ? '0' + memory[dp].toString(16) : memory[dp].toString(16);
+}
 
 /*
  * dpを画面に表示する
  */
 function displayDp(){
 	document.getElementById('dp').innerHTML = dp;
-	$(function(){
-		$('#m' + dp).addClass('current');
-
-	});
+    // 現在場所を示すための処理
+    $('#m' + dp).addClass('current');
 }
 
 /*
@@ -126,11 +132,10 @@ function displayDp(){
  */
 function displayIp(){
 	document.getElementById("ip").innerHTML = ip;
-	$(function(){
-		var iBef = '#i' + (ip - 1);
-		$(iBef).removeClass('current');
-		$('#i' + ip).addClass('current');
-	});
+    // 現在場所を示すための処理
+    var iBef = '#i' + (ip - 1);
+    $(iBef).removeClass('current');
+    $('#i' + ip).addClass('current');
 }
 
 /*
@@ -233,7 +238,7 @@ function execute(c) {
  * 命令を読み込む
  */
 function getInstruction() {
-	PGText = brainfuckPg.value;
+	PGText = programsForm.value;
 }
 
 /*
@@ -261,17 +266,17 @@ function auto() {
 	var random =Math.floor( Math.random() * 100 ) % 4;
 	switch (random) {
 		case 0 :
-			brainfuckPg.value = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
+            programsForm.value = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
 			break;
 		case 1 :
 			inputText.value = 'Hello, world!';
-			brainfuckPg.value = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.';
+            programsForm.value = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.';
 			break;
 		case 2 :
 			inputText.value = 'Hello, world!';
-			brainfuckPg.value = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
+            programsForm.value = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
 			break;
 		case 3 :
-			brainfuckPg.value = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
+            programsForm.value = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
 	}
 }

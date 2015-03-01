@@ -8,55 +8,106 @@
     <header>
         <h1>Brainfuck Interpreter</h1>
     </header>
-    <div id="hardware">
-        <div id="display-programs"></div>
-        <div id="memory-dump"        ></div>
-        <p><input type="text" id="input-text" placeholder="入力ストリーム"></p>
-        <p id="output-text"></p>
+    <div id="make">
+        <span>自作言語を作ってみよう！</span>
+        <ul>
+            <li>
+                <p>ポインタをインクリメント
+                    <input type="text" id="inc" value=">">
+                    <div id = "add-inc-text"></div>
+                    <input type="button" id="add-inc-button" value="追加">
+                    <input type="button" id="del-inc-button" value="削除">
+                </p>
+            </li>
+            <li>
+                <p>
+                    ポインタをデクリメント
+                    <input type="text" id="dec" value="<">
+                    <div id = "add-dec-text"></div>
+                    <input type="button" id="add-dec-button" value="追加">
+                    <input type="button" id="del-dec-button" value="削除">
+                </p>
+            </li>
+            <li>
+                <p>
+                    ポインタが指す値をインクリメント
+                    <input type="text" id="pinc" value="+">
+                    <div id = "add-pinc-text"></div>
+                    <input type="button" id="add-pinc-button" value="追加">
+                    <input type="button" id="del-pinc-button" value="削除">
+                </p>
+            </li>
+            <li>
+                <p>
+                    ポインタが指す値をデクリメント
+                    <input type="text" id="pdec" value="-">
+                    <div id = "add-pdec-text"></div>
+                    <input type="button" id="add-pdec-button" value="追加">
+                    <input type="button" id="del-pdec-button" value="削除">
+                </p>
+            </li>
+            <li>
+                <p>
+                    ポインタが指す値を出力に書き出す
+                    <input type="text" id="output" value=".">
+                    <div id = "add-output-text"></div>
+                    <input type="button" id="add-output-button" value="追加">
+                    <input type="button" id="del-output-button" value="削除">
+                </p>
+            </li>
+            <li>
+                <p>
+                    入力から1バイト読み込んで、ポインタが指す先に代入する
+                    <input type="text" id="input" value=",">
+                    <div id = "add-input-text"></div>
+                    <input type="button" id="add-input-button" value="追加">
+                    <input type="button" id="del-input-button" value="削除">
+                </p>
+            </li>
+            <li>
+                <p>
+                    ポインタが指す値が0なら対応する]の直後にジャンプする
+                    <input type="text" id="start-jmp" value="[">
+                    <div id = "add-start-jmp-text"></div>
+                    <input type="button" id="add-start-jmp-button" value="追加">
+                    <input type="button" id="del-start-jmp-button" value="削除">
+                </p>
+            </li>
+            <li>
+                <p>
+                    ポインタが指す値が0でないなら対応する[にジャンプする
+                    <input type="text" id="end-jmp" value="]">
+                    <div id = "add-end-jmp-text"></div>
+                    <input type="button" id="add-end-jmp-button" value="追加">
+                    <input type="button" id="del-end-jmp-button" value="削除">
+                </p>
+            </li>
+        </ul>
+        <input type="button" id="token" value="命令反映">
+        <input type="button" id="auto-ather-lang" value="自動派生言語">
     </div>
     <div id="exec">
-        <textarea id="programs-form" placeholder="プログラムをここに記述"></textarea>
+        <textarea id="programs-form" placeholder="プログラムをここに記述"></textarea><br>
         <input type="button" id="go"   value="一度に実行">
         <input type="button" id="step" value="１ステップ実行">
-        <input type="button" id="auto" value="自動ハローワールド">
+        <input type="button" id="auto" value="自動プログラム">
 
         <br>
 
+        <span id="dp">0</span><br>
+        <span id="ip">0</span><br>
+
         <input type="text"   id="index" placeholder="メモリの表示個数">
         <input type="button" id="memory-chenge" value="メモリ容量変更">
-        <input type="button" id="init"          value="リセット"><BR>
-        <span id="dp">0</span><BR>
-        <span id="ip">0</span><BR>
+        <input type="button" id="init"          value="リセット"><br>
+        <div id="memory-dump"        ></div><br>
+        <p><input type="text" id="input-text" placeholder="入力ストリーム"></p>
+        <p id="output-text"></p>
     </div>
 
-    <div id="make">
-        <span>命令は８個あるのでネタ言語を作る場合は最低３バイト用意すればよい</span>
-        <ul>
-            <li>
-                <p id="inc">&gt;<input type="text" placeholder="ポインタをインクリメント" value="000"></p>
-            </li>
-            <li>
-                <p id="dec">&lt;<input type="text" placeholder="ポインタをデクリメント"  value="001"></p>
-            </li>
-            <li>
-                <p id="pinc">+<input type="text" placeholder="ポインタが指す値をインクリメント" value="010"></p>
-            </li>
-            <li>
-                <p id="pdec">-<input type="text" placeholder="ポインタが指す値をデクリメント" value="011"></p>
-            </li>
-            <li>
-                <p id="output">.<input type="text" placeholder="ポインタが指す値を出力に書き出す" value="100"></p>
-            </li>
-            <li>
-                <p id="input">,<input type="text" placeholder="入力から1バイト読み込んで、ポインタが指す先に代入する" value="101"></p>
-            </li>
-            <li>
-                <p id="start-jmp">[<input type="text" placeholder="ポインタが指す値が0なら対応する]の直後にジャンプする" value="110"></p>
-            </li>
-            <li>
-                <p id="end-jmp">]<input type="text" placeholder="ポインタが指す値が0でないなら対応する[にジャンプする" value="111"></p>
-            </li>
-        </ul>
+
+    <div id="hardware">
+        <div id="display-programs"></div>
     </div>
     <footer>
         All Rights Reserved.
@@ -64,5 +115,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script type="text/javascript" src="../js/brainfuck.js"></script>
     <script type="text/javascript" src="../js/brainfuckButton.js"></script>
+    <script type="text/javascript" src="../js/brainfuckInstruction.js"></script>
 </body>
 </html>

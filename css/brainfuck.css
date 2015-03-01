@@ -6,15 +6,14 @@ header {
     color: black;
 }
 #hardware {
-    float: left;
-    width: 25%;
+    clear: both;
 }
 #exec {
-    float: left;
-    width: 50%;
+    float: right;
+    width: 75%;
 }
 #make {
-    float:right;
+    float:left;
     width: 25%;
 }
 footer {
@@ -36,7 +35,7 @@ footer {
 	height: 100px;
 }
 #display-programs:before {
-    content: "読み込んだ命令：";
+    content: "読み込んだ命令：(命令以外の文字は表示されません)";
 }
 #display-programs ul li{
     margin: 0;
@@ -44,7 +43,6 @@ footer {
     display: block;
     float:left;
     list-style: none;
-    width: 10px;
 }
 #memory-dump:before {
     content: "メモリダンプ：";

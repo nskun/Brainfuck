@@ -1,7 +1,9 @@
 // Brainfuckプログラムの参照
+// TODO:PHP側の処理を追加
+// TODO:TRIE木での実装
 var programsForm = document.getElementById('programs-form');
 var displayPrograms = document.getElementById('display-programs');
-var PGText;
+var loadPrograms = [];
 // TODO:命令とメモリをマウスでクリックすると次はそこから動くようにする。
 // インストラクションポインタ
 var ip;
@@ -23,6 +25,15 @@ var memoryChenge = document.getElementById('index');
 // メモリダンプの参照
 var memoryDumpPoint = document.getElementById('memory-dump');
 
+// 命令
+var inc = [];
+var dec = [];
+var pinc = [];
+var pdec = [];
+var output = [];
+var input = [];
+var startJmp = [];
+var endJmp = [];
 /*
  * バイト配列をindexの数だけ追加する。
  */
@@ -42,11 +53,9 @@ function init() {
 	}
 	ip = 0;
 	dp = 0;
-	PGText = '';
+    loadPrograms = [];
 	getCharPointer = 0;
-	inputText.value = '';
 	outputText.innerHTML = '';
-	programsForm.value = '';
 }
 
 /*
@@ -132,8 +141,10 @@ function displayDp(){
  * ip、dpを現在位置を削除する
  */
 function removeCurrentPointer() {
+    var defer = $.Deferred();
 	$('#i' + ip).removeClass('current');
 	$('#m' + dp).removeClass('current');
+    return defer.promise();
 }
 /*
  * ip、dpの現在位置を表示する
@@ -155,9 +166,9 @@ function displayInstruction() {
 	// liを定義
 	var i = 0; // カウンタ
 	var df = document.createDocumentFragment();
-	for (var val in PGText) {
+	for (var val in loadPrograms) {
 		var elementLi = document.createElement('li');
-		elementLi.appendChild(document.createTextNode(PGText[val]));
+		elementLi.appendChild(document.createTextNode(loadPrograms[val].myInstruction));
 		elementLi.id = 'i' + i++;
 		df.appendChild(elementLi);
 	}
@@ -170,34 +181,34 @@ function displayInstruction() {
  * 実行ボタンを押した時の動作
  */
 function execute(c) {
-	switch (c) {
-		case '>':
+    switch (c.instruction) {
+		case 'inc':
 			if (memory.length <= dp + 1) {
 				throw new Error("メモリの範囲外に移動しました。");
 			} else {
 				dp++;
 			}
 			break;
-		case '<':
+		case 'dec':
 			if (dp - 1 < 0) {
 				throw new Error("メモリの範囲外に移動しました。");
 			} else {
 				dp--;
 			}
 			break;
-		case '+':
+		case 'pinc':
 			(memory[dp] == 255) ? memory[dp] = 0 : memory[dp]++;
 			break;
-		case '-':
+		case 'pdec':
 			(memory[dp] == 0) ? memory[dp] = 255 : memory[dp]--;
 			break;
-		case '.': // output TODO:UTF16に対応させる。
+		case 'output': // output TODO:UTF16に対応させる。
 			outputText.innerHTML += String.fromCharCode(memory[dp]);
 			break;
-		case ',': // input TODO:UTF16に対応させる。
+		case 'input': // input TODO:UTF16に対応させる。
 			memory[dp] = getChar();
 			break;
-		case '[':
+		case 'startJmp':
 			// TODO:動作確認すること
 			// ポインタが差す値が0なら
 			if (memory[dp] == 0){
@@ -205,9 +216,9 @@ function execute(c) {
 				var jmp = 1;
 				//対応する]の直後にジャンプする
 				while(1) {
-					if(PGText[jmpIndex] == '[') {
+					if(loadPrograms[jmpIndex].instruction == 'startJmp') {
 						jmp += 1;
-					} else if (PGText[jmpIndex] == ']') {
+					} else if (loadPrograms[jmpIndex].instruction == 'endJmp') {
 						jmp -=1;
 					}
 					if (jmp == 0) {
@@ -218,16 +229,16 @@ function execute(c) {
 				ip = jmpIndex;
 			}
 			break;
-		case ']':
+		case 'endJmp':
 			// ポインタの差す値が0でないなら
 			if (memory[dp] != 0){
 				var jmpIndex = ip - 1;
 				var jmp = 1;
 				// 対応する[の直後にジャンプする
 				while(1) {
-					if (PGText[jmpIndex] == '[') {
+					if (loadPrograms[jmpIndex].instruction == 'startJmp') {
 						jmp -= 1;
-					} else if (PGText[jmpIndex] == ']') {
+					} else if (loadPrograms[jmpIndex].instruction == 'endJmp') {
 						jmp += 1;
 					}
 					if (jmp == 0) {
@@ -242,31 +253,148 @@ function execute(c) {
 	ip++;
 }
 
+function escapeRegExp(string) {
+    return string.replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
+}
 /*
  * 命令を読み込む
  */
 function getInstruction() {
-	PGText = programsForm.value;
+    patternInc = [];
+    patternDec = [];
+    patternPinc = [];
+    patternPdec = [];
+    patternOutput = [];
+    patternInput = [];
+    patternStartJmp = [];
+    patternEndJmp = [];
+    for(var i = 0; i < inc.length; i++){
+        patternInc.push(new RegExp("^" + escapeRegExp(inc[i])));
+    }
+    for(var i = 0; i < dec.length; i++){
+        patternDec.push(new RegExp("^" + escapeRegExp(dec[i])));
+    }
+    for(var i = 0; i < pinc.length; i++){
+        patternPinc.push(new RegExp("^" + escapeRegExp(pinc[i])));
+    }
+    for(var i = 0; i < pdec.length; i++){
+        patternPdec.push(new RegExp("^" + escapeRegExp(pdec[i])));
+    }
+    for(var i = 0; i < output.length; i++){
+        patternOutput.push(new RegExp("^" + escapeRegExp(output[i])));
+    }
+    for(var i = 0; i < input.length; i++){
+        patternInput.push(new RegExp("^" + escapeRegExp(input[i])));
+    }
+    for(var i = 0; i < startJmp.length; i++){
+        patternStartJmp.push(new RegExp("^" + escapeRegExp(startJmp[i])));
+    }
+    for(var i = 0; i < endJmp.length; i++){
+        patternEndJmp.push(new RegExp("^" + escapeRegExp(endJmp[i])));
+    }
+    var i = 0;
+    var flag = false;
+    while(i < programsForm.value.length) {
+        for(var j = 0; j < patternInc.length; j++) {
+            if (patternInc[j].test(programsForm.value.substr(i))) {
+                pushPrograms('inc', programsForm.value.substr(i, inc[j].length))
+                i += inc[j].length;
+                flag = true;
+                break;
+            }
+        }
+        for(var j = 0; j < patternDec.length; j++) {
+            if (patternDec[j].test(programsForm.value.substr(i))) {
+                pushPrograms('dec', programsForm.value.substr(i, dec[j].length))
+                i += dec[j].length;
+                flag = true;
+                break;
+            }
+        }
+        for(var j = 0; j < patternPinc.length; j++) {
+            if (patternPinc[j].test(programsForm.value.substr(i))) {
+                pushPrograms('pinc', programsForm.value.substr(i, pinc[j].length));
+                i += pinc[j].length;
+                flag = true;
+                break;
+            }
+        }
+        for(var j = 0; j < patternPdec.length; j++) {
+            if (patternPdec[j].test(programsForm.value.substr(i))) {
+                pushPrograms('pdec', programsForm.value.substr(i, pdec[j].length));
+                i += pdec[j].length;
+                flag = true;
+                break;
+            }
+        }
+        for(var j = 0; j < patternOutput.length; j++) {
+            if (patternOutput[j].test(programsForm.value.substr(i))) {
+                pushPrograms('output', programsForm.value.substr(i, output[j].length));
+                i += output[j].length;
+                flag = true;
+                break;
+            }
+        }
+        for(var j = 0; j < patternInput.length; j++) {
+            if (patternInput[j].test(programsForm.value.substr(i))) {
+                pushPrograms('input', programsForm.value.substr(i, input[j].length));
+                i += input[j].length;
+                flag = true;
+                break;
+            }
+        }
+        for(var j = 0; j < patternStartJmp.length; j++) {
+            if (patternStartJmp[j].test(programsForm.value.substr(i))) {
+                pushPrograms('startJmp', programsForm.value.substr(i, startJmp[j].length));
+                i += startJmp[j].length;
+                flag = true;
+                break;
+            }
+        }
+        for(var j = 0; j < patternEndJmp.length; j++) {
+            if (patternEndJmp[j].test(programsForm.value.substr(i))) {
+                pushPrograms('endJmp', programsForm.value.substr(i, endJmp[j].length));
+                i += endJmp[j].length;
+                flag = true;
+                break;
+            }
+        }
+        if(flag){
+            flag = false;
+        } else {
+            i++;
+        }
+    }
 }
+function pushPrograms(instruction, myInstruction) {
+    var programs = {};
+    programs.instruction = instruction;
+    programs.myInstruction = myInstruction;
+    loadPrograms.push(programs);
 
+}
 /*
  * 自動ハローワールドボタンを押したときの動作
  */
 function auto() {
-	var random =Math.floor( Math.random() * 100 ) % 4;
+	var random =Math.floor( Math.random() * 100 ) % 5;
 	switch (random) {
 		case 0 :
-			programsForm.value = '+++++++++[>++++++++>+++++++++++>+++++<<<-]>.>++.+++++++..+++.>-.------------.<++++++++.--------.+++.------.--------.>+.';
+			programsForm.value = pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+startJmp[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+dec[0]+dec[0]+dec[0]+pdec[0]+endJmp[0]+inc[0]+output[0]+inc[0]+pinc[0]+pinc[0]+output[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+output[0]+output[0]+pinc[0]+pinc[0]+pinc[0]+output[0]+inc[0]+pdec[0]+output[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+output[0]+dec[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+output[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+output[0]+pinc[0]+pinc[0]+pinc[0]+output[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+output[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+output[0]+inc[0]+pinc[0]+output[0];
 			break;
 		case 1 :
 			inputText.value = 'Hello, world!';
-			programsForm.value = ',.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.>,.';
+			programsForm.value = input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0]+inc[0]+input[0]+output[0];
 			break;
 		case 2 :
 			inputText.value = 'Hello, world!';
-			programsForm.value = ',.,.,.,.,.,.,.,.,.,.,.,.,.';
+			programsForm.value = input[0]+output[0]+input[0]+output[0]+input[0]+output[0]+input[0]+output[0]+input[0]+output[0]+input[0]+output[0]+input[0]+output[0]+input[0]+output[0]+input[0]+output[0]+input[0]+output[0]+input[0]+output[0]+input[0]+output[0]+input[0]+output[0];
 			break;
 		case 3 :
-			programsForm.value = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++.+++++++..+++.-------------------------------------------------------------------------------.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.--------.+++.------.--------.-------------------------------------------------------------------.';
-	}
+			programsForm.value = pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+output[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+output[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+output[0]+output[0]+pinc[0]+pinc[0]+pinc[0]+output[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+output[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+output[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+output[0]+pinc[0]+pinc[0]+pinc[0]+output[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+output[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+output[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+pdec[0]+output[0];
+            break;
+        case 4 :
+            programsForm.value = pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+startJmp[0]+pdec[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+inc[0]+pinc[0]+inc[0]+pinc[0]+inc[0]+pdec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+endJmp[0]+inc[0]+startJmp[0]+dec[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+inc[0]+inc[0]+inc[0]+inc[0]+inc[0]+pinc[0]+pinc[0]+inc[0]+inc[0]+pinc[0]+pinc[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+pdec[0]+endJmp[0]+dec[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+pdec[0]+pdec[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+pdec[0]+inc[0]+inc[0]+pdec[0]+pdec[0]+pdec[0]+inc[0]+pinc[0]+pinc[0]+inc[0]+inc[0]+inc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+startJmp[0]+pdec[0]+inc[0]+pinc[0]+pinc[0]+inc[0]+pinc[0]+pinc[0]+dec[0]+dec[0]+endJmp[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+startJmp[0]+pdec[0]+inc[0]+pdec[0]+startJmp[0]+inc[0]+inc[0]+inc[0]+inc[0]+inc[0]+inc[0]+inc[0]+endJmp[0]+inc[0]+startJmp[0]+dec[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+output[0]+inc[0]+output[0]+inc[0]+inc[0]+inc[0]+inc[0]+output[0]+output[0]+inc[0]+inc[0]+inc[0]+pinc[0]+dec[0]+endJmp[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+pdec[0]+startJmp[0]+inc[0]+inc[0]+inc[0]+inc[0]+endJmp[0]+inc[0]+startJmp[0]+dec[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+pinc[0]+inc[0]+output[0]+inc[0]+output[0]+inc[0]+output[0]+output[0]+inc[0]+inc[0]+inc[0]+pinc[0]+dec[0]+endJmp[0]+inc[0]+inc[0]+inc[0]+inc[0]+pinc[0]+dec[0]+pdec[0]+startJmp[0]+dec[0]+dec[0]+dec[0]+endJmp[0]+dec[0]+startJmp[0]+startJmp[0]+pdec[0]+dec[0]+dec[0]+pinc[0]+inc[0]+inc[0]+endJmp[0]+inc[0]+inc[0]+inc[0]+pinc[0]+inc[0]+pinc[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+startJmp[0]+pdec[0]+inc[0]+inc[0]+pinc[0]+inc[0]+pinc[0]+inc[0]+pdec[0]+dec[0]+dec[0]+dec[0]+dec[0]+endJmp[0]+dec[0]+endJmp[0]+inc[0]+inc[0]+startJmp[0]+startJmp[0]+pdec[0]+endJmp[0]+dec[0]+endJmp[0]+inc[0]+startJmp[0]+inc[0]+inc[0]+inc[0]+startJmp[0]+inc[0]+output[0]+dec[0]+dec[0]+output[0]+dec[0]+dec[0]+dec[0]+endJmp[0]+dec[0]+startJmp[0]+output[0]+dec[0]+dec[0]+dec[0]+dec[0]+endJmp[0]+inc[0]+endJmp[0]+inc[0]+output[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+dec[0]+endJmp[0];
+            break;
+    }
 }

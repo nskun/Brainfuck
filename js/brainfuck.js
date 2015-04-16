@@ -141,10 +141,8 @@ function displayDp(){
  * ip、dpを現在位置を削除する
  */
 function removeCurrentPointer() {
-    var defer = $.Deferred();
 	$('#i' + ip).removeClass('current');
 	$('#m' + dp).removeClass('current');
-    return defer.promise();
 }
 /*
  * ip、dpの現在位置を表示する
@@ -181,6 +179,7 @@ function displayInstruction() {
  * 実行ボタンを押した時の動作
  */
 function execute(c) {
+    alert("");
     switch (c.instruction) {
 		case 'inc':
 			if (memory.length <= dp + 1) {
@@ -269,6 +268,7 @@ function getInstruction() {
     patternStartJmp = [];
     patternEndJmp = [];
     for(var i = 0; i < inc.length; i++){
+        inc[i];
         patternInc.push(new RegExp("^" + escapeRegExp(inc[i])));
     }
     for(var i = 0; i < dec.length; i++){

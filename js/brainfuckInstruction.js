@@ -1,7 +1,7 @@
-var limit = 10;
+var limit = 9;
 var textInc = document.getElementById("add-inc-text");
 document.getElementById('add-inc-button').onclick = function(){
-    if(textInc.children.length > limit){ // 10個以上になったらそれ以上増やさない
+    if(limit <= textInc.children.length){ // 10個以上になったらそれ以上増やさない
         return;
     }
     var inputName = "inc" + textInc.children.length;
@@ -20,7 +20,7 @@ document.getElementById('del-inc-button').onclick = function(){
 
 var textDec = document.getElementById("add-dec-text");
 document.getElementById('add-dec-button').onclick = function(){
-    if(textDec.children.length > limit){ // 10個以上になったらそれ以上増やさない
+    if(limit <= textDec.children.length){ // 10個以上になったらそれ以上増やさない
         return;
     }
     var inputName = "dec" + textDec.children.length;
@@ -38,7 +38,7 @@ document.getElementById('del-dec-button').onclick = function(){
 }
 var textPinc = document.getElementById("add-pinc-text");
 document.getElementById('add-pinc-button').onclick = function(){
-    if(textPinc.children.length > limit){ // 10個以上になったらそれ以上増やさない
+    if(limit <= textPinc.children.length){ // 10個以上になったらそれ以上増やさない
         return;
     }
     var inputName = "pinc" + textPinc.children.length;
@@ -56,7 +56,7 @@ document.getElementById('del-pinc-button').onclick = function(){
 }
 var textPdec = document.getElementById("add-pdec-text");
 document.getElementById('add-pdec-button').onclick = function(){
-    if(textPdec.children.length > limit){ // 10個以上になったらそれ以上増やさない
+    if(limit <= textPdec.children.length){ // 10個以上になったらそれ以上増やさない
         return;
     }
     var inputName = "pdec" + textPdec.children.length;
@@ -74,7 +74,7 @@ document.getElementById('del-pdec-button').onclick = function(){
 }
 var textOutput = document.getElementById("add-output-text");
 document.getElementById('add-output-button').onclick = function(){
-    if(textOutput.children.length > limit){ // 10個以上になったらそれ以上増やさない
+    if(limit <= textOutput.children.length){ // 10個以上になったらそれ以上増やさない
         return;
     }
     var inputName = "output" + textOutput.children.length;
@@ -92,7 +92,7 @@ document.getElementById('del-output-button').onclick = function(){
 }
 var textInput = document.getElementById("add-input-text");
 document.getElementById('add-input-button').onclick = function(){
-    if(textInput.children.length > limit){ // 10個以上になったらそれ以上増やさない
+    if(limit <= textInput.children.length){ // 10個以上になったらそれ以上増やさない
         return;
     }
     var inputName = "input" + textInput.children.length;
@@ -110,7 +110,7 @@ document.getElementById('del-input-button').onclick = function(){
 }
 var textStartJmp = document.getElementById("add-start-jmp-text");
 document.getElementById('add-start-jmp-button').onclick = function(){
-    if(textStartJmp.children.length > limit){ // 10個以上になったらそれ以上増やさない
+    if(limit <= textStartJmp.children.length){ // 10個以上になったらそれ以上増やさない
         return;
     }
     var inputName = "start-jmp" + textStartJmp.children.length;
@@ -128,7 +128,7 @@ document.getElementById('del-start-jmp-button').onclick = function(){
 }
 var textEndJmp = document.getElementById("add-end-jmp-text");
 document.getElementById('add-end-jmp-button').onclick = function(){
-    if(textEndJmp.children.length > limit){ // 10個以上になったらそれ以上増やさない
+    if(limit <= textEndJmp.children.length){ // 10個以上になったらそれ以上増やさない
         return;
     }
     var inputName = "end-jmp" + textEndJmp.children.length;

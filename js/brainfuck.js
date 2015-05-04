@@ -25,7 +25,7 @@ var memoryChenge = document.getElementById('index');
 // メモリダンプの参照
 var memoryDumpPoint = document.getElementById('memory-dump');
 
-// 命令
+// 命令を保存する配列。
 var inc = [];
 var dec = [];
 var pinc = [];

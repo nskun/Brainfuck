@@ -33,50 +33,46 @@ document.getElementById('memory-chenge').onclick = function() {
 	displayCurrentPointer();
 };
 /**
- * １ステップずつ実行する。
+ *
+ * @param recursive
  */
-function stepwiseExecution() {
-    alert("");
-    removeCurrentPointer();
-    try {
-        execute(loadPrograms[ip]);
-    } catch(e) {
-        alert(e);
-        return;
+function stepwiseExecution(recursive) {
+    // ipが0だったら新しく命令を読み込む。
+    if (ip == 0) {
+        getInstruction();
+        displayInstruction();
+        memoryDump();
     }
-    memoryDumpUpdate();
-    displayCurrentPointer();
-    displayDp();
-    displayIp();
+    if(ip < loadPrograms.length) {
+        removeCurrentPointer();
+        try {
+            execute(loadPrograms[ip]);
+        } catch(e) {
+            alert(e);
+            return;
+        }
+        memoryDumpUpdate();
+        displayCurrentPointer();
+        displayDp();
+        displayIp();
+        if(recursive === RECURSIVE) {
+            setTimeout(arguments.callee, 1, RECURSIVE);
+        }
+    }
+
 }
 // Brainfuckプログラムのテキストエリアに対するボタン
 /*
  * 全部実行する。
  */
 document.getElementById('go').onclick = function() {
-    // ipが0だったら新しく命令を読み込む。
-    if (ip == 0) {
-        getInstruction();
-        displayInstruction();
-        memoryDump();
-    }
-    while (ip < loadPrograms.length) {
-        setTimeout(stepwiseExecution(), 1);
-    }
+    stepwiseExecution(RECURSIVE);
 };
 /*
  * １ステップずつ実行する。
  */
-document.getElementById('step').onclick = function(){
-    // ipが0だったら新しく命令を読み込む。
-    if (ip == 0) {
-        getInstruction();
-        displayInstruction();
-        memoryDump();
-    }
-    if (ip < loadPrograms.length) {
-        setTimeout(stepwiseExecution(), 1);
-    }
+document.getElementById('step').onclick = function() {
+    stepwiseExecution(NO_RECURSIVE);
 };
 document.getElementById('auto').onclick = function() {
 	removeCurrentPointer();
@@ -100,7 +96,7 @@ function instructionDelete() {
 /**
  * 命令をバッファに入れる
  */
-function instructionReflect(){
+function instructionReflect() {
     inc.push(document.getElementById("inc").value);
     incRef = document.getElementById("add-inc-text");
     for(var i = 0; i < incRef.children.length; i++){

@@ -1,15 +1,86 @@
 Todo:動作確認してない
 CREATE TABLE brainfuck(
 brainfuckID INT         NOT NULL
-,inc        VARCHAR(50) NOT NULL
-,dec        VARCHAR(50) NOT NULL
-,pinc       VARCHAR(50) NOT NULL
-,pdec       VARCHAR(50) NOT NULL
-,inp        VARCHAR(50) NOT NULL
-,out        VARCHAR(50) NOT NULL
-,jmps       VARCHAR(50) NOT NULL
-,jmpt       VARCHAR(50) NOT NULL
-,ip         CHAR   (15) NOT NULL
+,inc1       VARCHAR(50) NOT NULL
+,inc2       VARCHAR(50)
+,inc3       VARCHAR(50)
+,inc4       VARCHAR(50)
+,inc5       VARCHAR(50)
+,inc6       VARCHAR(50)
+,inc7       VARCHAR(50)
+,inc8       VARCHAR(50)
+,inc9       VARCHAR(50)
+,inc10      VARCHAR(50)
+,dec1       VARCHAR(50) NOT NULL
+,dec2       VARCHAR(50)
+,dec3       VARCHAR(50)
+,dec4       VARCHAR(50)
+,dec5       VARCHAR(50)
+,dec6       VARCHAR(50)
+,dec7       VARCHAR(50)
+,dec8       VARCHAR(50)
+,dec9       VARCHAR(50)
+,dec10      VARCHAR(50)
+,pinc1      VARCHAR(50) NOT NULL
+,pinc2      VARCHAR(50)
+,pinc3      VARCHAR(50)
+,pinc4      VARCHAR(50)
+,pinc5      VARCHAR(50)
+,pinc6      VARCHAR(50)
+,pinc7      VARCHAR(50)
+,pinc8      VARCHAR(50)
+,pinc9      VARCHAR(50)
+,pinc10     VARCHAR(50)
+,pdec1      VARCHAR(50) NOT NULL
+,pdec2      VARCHAR(50)
+,pdec3      VARCHAR(50)
+,pdec4      VARCHAR(50)
+,pdec5      VARCHAR(50)
+,pdec6      VARCHAR(50)
+,pdec7      VARCHAR(50)
+,pdec8      VARCHAR(50)
+,pdec9      VARCHAR(50)
+,pdec10     VARCHAR(50)
+,inp1       VARCHAR(50) NOT NULL
+,inp2       VARCHAR(50)
+,inp3       VARCHAR(50)
+,inp4       VARCHAR(50)
+,inp5       VARCHAR(50)
+,inp6       VARCHAR(50)
+,inp7       VARCHAR(50)
+,inp8       VARCHAR(50)
+,inp9       VARCHAR(50)
+,inp10      VARCHAR(50)
+,out1       VARCHAR(50) NOT NULL
+,out2       VARCHAR(50)
+,out3       VARCHAR(50)
+,out4       VARCHAR(50)
+,out5       VARCHAR(50)
+,out6       VARCHAR(50)
+,out7       VARCHAR(50)
+,out8       VARCHAR(50)
+,out9       VARCHAR(50)
+,out10      VARCHAR(50)
+,jmps1      VARCHAR(50) NOT NULL
+,jmps2      VARCHAR(50)
+,jmps3      VARCHAR(50)
+,jmps4      VARCHAR(50)
+,jmps5      VARCHAR(50)
+,jmps6      VARCHAR(50)
+,jmps7      VARCHAR(50)
+,jmps8      VARCHAR(50)
+,jmps9      VARCHAR(50)
+,jmps10     VARCHAR(50)
+,jmpt1      VARCHAR(50) NOT NULL
+,jmpt2      VARCHAR(50)
+,jmpt3      VARCHAR(50)
+,jmpt4      VARCHAR(50)
+,jmpt5      VARCHAR(50)
+,jmpt6      VARCHAR(50)
+,jmpt7      VARCHAR(50)
+,jmpt8      VARCHAR(50)
+,jmpt9      VARCHAR(50)
+,jmpt10     VARCHAR(50)
 ,CreateDate DATETIME    NOT NULL
 ,PRIMARY KEY(brainfuckID)
 ,INDEX(brainfuckID)

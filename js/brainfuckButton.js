@@ -1,4 +1,6 @@
-// 画面読み込み時
+/**
+ * 画面読み込み時
+ */
 window.onload = function() {
 	add(20);
 	init();
@@ -9,7 +11,9 @@ window.onload = function() {
     instructionReflect();
 };
 
-// 初期化
+/**
+ * 初期化
+ */
 document.getElementById('init').onclick = function() {
 	init();
 	displayInstruction();
@@ -19,14 +23,20 @@ document.getElementById('init').onclick = function() {
 	displayCurrentPointer();
 };
 
-// メモリの容量の変更
+/**
+ * メモリの容量の変更
+ */
 document.getElementById('memory-chenge').onclick = function() {
     memoryCapacityChenge();
 	memoryDump();
 	displayDp();
 	displayCurrentPointer();
 };
+/**
+ * １ステップずつ実行する。
+ */
 function stepwiseExecution() {
+    alert("");
     removeCurrentPointer();
     try {
         execute(loadPrograms[ip]);
@@ -51,11 +61,11 @@ document.getElementById('go').onclick = function() {
         memoryDump();
     }
     while (ip < loadPrograms.length) {
-        stepwiseExecution();
+        setTimeout(stepwiseExecution(), 1);
     }
 };
 /*
- * １文字ずつ実行する。
+ * １ステップずつ実行する。
  */
 document.getElementById('step').onclick = function(){
     // ipが0だったら新しく命令を読み込む。
@@ -65,7 +75,7 @@ document.getElementById('step').onclick = function(){
         memoryDump();
     }
     if (ip < loadPrograms.length) {
-        stepwiseExecution();
+        setTimeout(stepwiseExecution(), 1);
     }
 };
 document.getElementById('auto').onclick = function() {
@@ -132,7 +142,6 @@ function instructionReflect(){
         endJmp.push(endJmpRef.children[i].value);
     }
 }
-
 document.getElementById('token').onclick = function(){
     instructionDelete();
     instructionReflect();

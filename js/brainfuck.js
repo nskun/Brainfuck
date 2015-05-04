@@ -179,7 +179,6 @@ function displayInstruction() {
  * 実行ボタンを押した時の動作
  */
 function execute(c) {
-    alert("");
     switch (c.instruction) {
 		case 'inc':
 			if (memory.length <= dp + 1) {
@@ -374,7 +373,7 @@ function pushPrograms(instruction, myInstruction) {
 
 }
 /*
- * 自動ハローワールドボタンを押したときの動作
+ * 自動プログラムボタンを押したときの動作
  */
 function auto() {
 	var random =Math.floor( Math.random() * 100 ) % 5;

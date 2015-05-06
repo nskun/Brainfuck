@@ -1,0 +1,170 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/brainfuck.css">
+    <title>Brainfuck</title>
+</head>
+<body>
+    <header>
+        <h1>Brainfuck Interpreter</h1>
+    </header>
+    <form method="post">
+        <div id="make">
+            <span>自作言語を作ってみよう！</span>
+            <ul>
+                <li>
+                    <p>ポインタをインクリメント
+                        <input type="text" id="inc" class="inc" value=">">
+                        <input type="text" id="inc1" class="inc">
+                        <input type="text" id="inc2" class="inc">
+                        <input type="text" id="inc3" class="inc">
+                        <input type="text" id="inc4" class="inc">
+                        <input type="text" id="inc5" class="inc">
+                        <input type="text" id="inc6" class="inc">
+                        <input type="text" id="inc7" class="inc">
+                        <input type="text" id="inc8" class="inc">
+                        <input type="text" id="inc9" class="inc">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        ポインタをデクリメント
+                        <input type="text" id="dec" class="dec" value="<">
+                        <input type="text" id="dec1" class="dec">
+                        <input type="text" id="dec2" class="dec">
+                        <input type="text" id="dec3" class="dec">
+                        <input type="text" id="dec4" class="dec">
+                        <input type="text" id="dec5" class="dec">
+                        <input type="text" id="dec6" class="dec">
+                        <input type="text" id="dec7" class="dec">
+                        <input type="text" id="dec8" class="dec">
+                        <input type="text" id="dec9" class="dec">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        ポインタが指す値をインクリメント
+                        <input type="text" id="pinc" class="pinc" value="+">
+                        <input type="text" id="pinc1" class="pinc">
+                        <input type="text" id="pinc2" class="pinc">
+                        <input type="text" id="pinc3" class="pinc">
+                        <input type="text" id="pinc4" class="pinc">
+                        <input type="text" id="pinc5" class="pinc">
+                        <input type="text" id="pinc6" class="pinc">
+                        <input type="text" id="pinc7" class="pinc">
+                        <input type="text" id="pinc8" class="pinc">
+                        <input type="text" id="pinc9" class="pinc">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        ポインタが指す値をデクリメント
+                        <input type="text" id="pdec" class="pdec" value="-">
+                        <input type="text" id="pdec1" class="pdec">
+                        <input type="text" id="pdec2" class="pdec">
+                        <input type="text" id="pdec3" class="pdec">
+                        <input type="text" id="pdec4" class="pdec">
+                        <input type="text" id="pdec5" class="pdec">
+                        <input type="text" id="pdec6" class="pdec">
+                        <input type="text" id="pdec7" class="pdec">
+                        <input type="text" id="pdec8" class="pdec">
+                        <input type="text" id="pdec9" class="pdec">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        ポインタが指す値を出力に書き出す
+                        <input type="text" id="output" class="output" value=".">
+                        <input type="text" id="output1" class="output">
+                        <input type="text" id="output2" class="output">
+                        <input type="text" id="output3" class="output">
+                        <input type="text" id="output4" class="output">
+                        <input type="text" id="output5" class="output">
+                        <input type="text" id="output6" class="output">
+                        <input type="text" id="output7" class="output">
+                        <input type="text" id="output8" class="output">
+                        <input type="text" id="output9" class="output">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        入力から1バイト読み込んで、ポインタが指す先に代入する
+                        <input type="text" id="input" class="input" value=",">
+                        <input type="text" id="input1" class="input">
+                        <input type="text" id="input2" class="input">
+                        <input type="text" id="input3" class="input">
+                        <input type="text" id="input4" class="input">
+                        <input type="text" id="input5" class="input">
+                        <input type="text" id="input6" class="input">
+                        <input type="text" id="input7" class="input">
+                        <input type="text" id="input8" class="input">
+                        <input type="text" id="input9" class="input">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        ポインタが指す値が0なら対応する]の直後にジャンプする
+                        <input type="text" id="start-jmp" class="start-jmp" value="[">
+                        <input type="text" id="start-jmp1" class="start-jmp">
+                        <input type="text" id="start-jmp2" class="start-jmp">
+                        <input type="text" id="start-jmp3" class="start-jmp">
+                        <input type="text" id="start-jmp4" class="start-jmp">
+                        <input type="text" id="start-jmp5" class="start-jmp">
+                        <input type="text" id="start-jmp6" class="start-jmp">
+                        <input type="text" id="start-jmp7" class="start-jmp">
+                        <input type="text" id="start-jmp8" class="start-jmp">
+                        <input type="text" id="start-jmp9" class="start-jmp">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        ポインタが指す値が0でないなら対応する[にジャンプする
+                        <input type="text" id="end-jmp" class="end-jmp" value="]">
+                        <input type="text" id="end-jmp1" class="end-jmp">
+                        <input type="text" id="end-jmp2" class="end-jmp">
+                        <input type="text" id="end-jmp3" class="end-jmp">
+                        <input type="text" id="end-jmp4" class="end-jmp">
+                        <input type="text" id="end-jmp5" class="end-jmp">
+                        <input type="text" id="end-jmp6" class="end-jmp">
+                        <input type="text" id="end-jmp7" class="end-jmp">
+                        <input type="text" id="end-jmp8" class="end-jmp">
+                        <input type="text" id="end-jmp9" class="end-jmp">
+                    </p>
+                </li>
+            </ul>
+            <input type="button" id="token" value="命令反映">
+            <input type="button" id="auto-ather-lang" value="自動派生言語">
+        </div>
+    </form>
+    <div id="exec">
+        <textarea id="programs-form" placeholder="プログラムをここに記述"></textarea><br>
+        <input type="button" id="go"   value="一度に実行">
+        <input type="button" id="step" value="１ステップ実行">
+        <input type="button" id="auto" value="プログラム自動作成">
+
+        <br>
+
+        <span id="dp">0</span><br>
+        <span id="ip">0</span><br>
+
+        <input type="text"   id="index" placeholder="メモリの表示個数">
+        <input type="button" id="memory-chenge" value="メモリ容量変更">
+        <input type="button" id="init"          value="リセット"><br>
+        <div id="memory-dump"        ></div><br>
+        <p><input type="text" id="input-text" placeholder="入力ストリーム"></p>
+        <p id="output-text"></p>
+    </div>
+
+
+    <div id="hardware">
+        <div id="display-programs"></div>
+    </div>
+    <footer>
+        All Rights Reserved.
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/brainfuck.js"></script>
+    <script type="text/javascript" src="/js/brainfuckButton.js"></script>
+    <script type="text/javascript" src="/js/Const.js"></script>
+</body>
+</html>

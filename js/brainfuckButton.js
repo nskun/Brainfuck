@@ -2,13 +2,12 @@
  * 画面読み込み時
  */
 window.onload = function() {
-	add(20);
+    addMemory(20);
 	init();
 	memoryChenge.value = 20;
 	memoryDump();
-	displayDp();
 	displayCurrentPointer();
-    instructionReflect();
+    setInstructionBuffer();
 };
 
 /**
@@ -18,8 +17,7 @@ document.getElementById('init').onclick = function() {
 	init();
 	displayInstruction();
 	memoryDump();
-	displayDp();
-	displayIp();
+    displayPointer();
 	displayCurrentPointer();
 };
 
@@ -29,7 +27,7 @@ document.getElementById('init').onclick = function() {
 document.getElementById('memory-chenge').onclick = function() {
     memoryCapacityChenge();
 	memoryDump();
-	displayDp();
+    displayPointer();
 	displayCurrentPointer();
 };
 /**
@@ -53,8 +51,7 @@ function stepwiseExecution(recursive) {
         }
         memoryDumpUpdate();
         displayCurrentPointer();
-        displayDp();
-        displayIp();
+        displayPointer();
         if(recursive === RECURSIVE) {
             setTimeout(arguments.callee, 1, RECURSIVE);
         }
@@ -79,8 +76,7 @@ document.getElementById('auto').onclick = function() {
 	init();
 	auto();
 	memoryDump();
-	displayDp();
-	displayIp();
+    displayPointer();
 	displayCurrentPointer();
 };
 function instructionDelete() {
@@ -94,53 +90,48 @@ function instructionDelete() {
     endJmp = [];
 }
 /**
- * 命令をバッファに入れる
+ * 自作命令をJavaScript内のバッファに設定する。
  */
-function instructionReflect() {
-    inc.push(document.getElementById("inc").value);
-    incRef = document.getElementById("add-inc-text");
-    for(var i = 0; i < incRef.children.length; i++){
-        inc.push(incRef.children[i].value);
-    }
-    dec.push(document.getElementById('dec').value);
-    decRef = document.getElementById("add-dec-text");
-    for(var i = 0; i < decRef.children.length; i++){
-        dec.push(decRef.children[i].value);
-    }
-    pinc.push(document.getElementById('pinc').value);
-    pincRef = document.getElementById("add-pinc-text");
-    for(var i = 0; i < pincRef.children.length; i++){
-        pinc.push(pincRef.children[i].value);
-    }
-    pdec.push(document.getElementById('pdec').value);
-    pdecRef = document.getElementById("add-pdec-text");
-    for(var i = 0; i < pdecRef.children.length; i++){
-        pdec.push(pdecRef.children[i].value);
-    }
-    output.push(document.getElementById('output').value);
-    outputRef = document.getElementById("add-output-text");
-    for(var i = 0; i < outputRef.children.length; i++){
-        output.push(outputRef.children[i].value);
-    }
-    input.push(document.getElementById('input').value);
-    inputRef = document.getElementById("add-input-text");
-    for(var i = 0; i < inputRef.children.length; i++){
-        input.push(inputRef.children[i].value);
-    }
-    startJmp.push(document.getElementById('start-jmp').value);
-    startJmpRef = document.getElementById("add-start-jmp-text");
-    for(var i = 0; i < startJmpRef.children.length; i++){
-        startJmp.push(startJmpRef.children[i].value);
-    }
-    endJmp.push(document.getElementById('end-jmp').value);
-    endJmpRef = document.getElementById("add-end-jmp-text");
-    for(var i = 0; i < endJmpRef.children.length; i++){
-        endJmp.push(endJmpRef.children[i].value);
+function setInstructionBuffer() {
+    incRef = document.getElementsByClassName("inc");
+    decRef = document.getElementsByClassName("dec");
+    pincRef = document.getElementsByClassName("pinc");
+    pdecRef = document.getElementsByClassName("pdec");
+    outputRef = document.getElementsByClassName("output");
+    inputRef = document.getElementsByClassName("input");
+    startJmpRef = document.getElementsByClassName("start-jmp");
+    endJmpRef = document.getElementsByClassName("end-jmp");
+
+    for(var i = 0; i < INSTRUCTION_COUNT; i++){
+        if(incRef[i].value !== "") {
+            inc[i] = incRef[i].value;
+        }
+        if(decRef[i].value !== "") {
+            dec[i] = decRef[i].value;
+        }
+        if(pincRef[i].value !== "") {
+            pinc[i] = pincRef[i].value;
+        }
+        if(pdecRef[i].value !== "") {
+            pdec[i] = pdecRef[i].value;
+        }
+        if(outputRef[i].value !== "") {
+            output[i] = outputRef[i].value;
+        }
+        if(inputRef[i].value !== "") {
+            input[i] = inputRef[i].value;
+        }
+        if(startJmpRef[i].value !== "") {
+            startJmp[i] = startJmpRef[i].value;
+        }
+        if(endJmpRef[i].value !== "") {
+            endJmp[i] = endJmpRef[i].value;
+        }
     }
 }
 document.getElementById('token').onclick = function(){
     instructionDelete();
-    instructionReflect();
+    setInstructionBuffer();
 }
 document.getElementById('auto-ather-lang').onclick = function(){
     instructionDelete();
@@ -177,5 +168,5 @@ document.getElementById('auto-ather-lang').onclick = function(){
 //            document.getElementById('end-jmp').value ='なばびこーん';
 //            break;
     }
-    instructionReflect();
+    setInstructionBuffer();
 }

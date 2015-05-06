@@ -34,18 +34,21 @@ var output = [];
 var input = [];
 var startJmp = [];
 var endJmp = [];
-/*
- * バイト配列をindexの数だけ追加する。
+/**
+ * メモリの配列を引数の数だけ追加する。
+ *
+ * @param index
  */
-function add(index) {
+function addMemory(index) {
 	for (var i = 0; i < index; i++) {
 		memory.push(0);
 	}
 }
 
 /*
- * 初期化ボタンを押したときの動作
- * 現在のlengthで00に初期化する
+ * メモリの内容、ポインタの位置、読み込み済みプログラム、入力ストリームのポインタ、出力ストリーム
+ * を初期化する。
+ *
  */
 function init() {
 	for (var i = 0; i < memory.length; i++) {
@@ -69,7 +72,7 @@ function memoryCapacityChenge() {
 	var i;
 
 	if (memory.length < index) { // 現在より長い場合
-		add(index - memory.length);
+        addMemory(index - memory.length);
 	} else if (index < memory.length) { // 現在より短い場合
 		for (i = 0; i = memory.length - index; i++) {
 			memory.splice(memory.length - i,1);
@@ -128,13 +131,8 @@ function memoryDumpUpdate() {
 /*
  * ipを画面に表示する
  */
-function displayIp(){
+function displayPointer(){
 	document.getElementById("ip").innerHTML = ip;
-}
-/*
- * dpを画面に表示する
- */
-function displayDp(){
 	document.getElementById('dp').innerHTML = dp;
 }
 /*
@@ -266,37 +264,38 @@ function getInstruction() {
     patternInput = [];
     patternStartJmp = [];
     patternEndJmp = [];
-    for(var i = 0; i < inc.length; i++){
-        inc[i];
+    var i = 0;
+
+    for(i = 0; i < inc.length; i++){
         patternInc.push(new RegExp("^" + escapeRegExp(inc[i])));
     }
-    for(var i = 0; i < dec.length; i++){
+    for(i = 0; i < dec.length; i++){
         patternDec.push(new RegExp("^" + escapeRegExp(dec[i])));
     }
-    for(var i = 0; i < pinc.length; i++){
+    for(i = 0; i < pinc.length; i++){
         patternPinc.push(new RegExp("^" + escapeRegExp(pinc[i])));
     }
-    for(var i = 0; i < pdec.length; i++){
+    for(i = 0; i < pdec.length; i++){
         patternPdec.push(new RegExp("^" + escapeRegExp(pdec[i])));
     }
-    for(var i = 0; i < output.length; i++){
+    for(i = 0; i < output.length; i++){
         patternOutput.push(new RegExp("^" + escapeRegExp(output[i])));
     }
-    for(var i = 0; i < input.length; i++){
+    for(i = 0; i < input.length; i++){
         patternInput.push(new RegExp("^" + escapeRegExp(input[i])));
     }
-    for(var i = 0; i < startJmp.length; i++){
+    for(i = 0; i < startJmp.length; i++){
         patternStartJmp.push(new RegExp("^" + escapeRegExp(startJmp[i])));
     }
-    for(var i = 0; i < endJmp.length; i++){
+    for(i = 0; i < endJmp.length; i++){
         patternEndJmp.push(new RegExp("^" + escapeRegExp(endJmp[i])));
     }
-    var i = 0;
+    i = 0;
     var flag = false;
     while(i < programsForm.value.length) {
         for(var j = 0; j < patternInc.length; j++) {
             if (patternInc[j].test(programsForm.value.substr(i))) {
-                pushPrograms('inc', programsForm.value.substr(i, inc[j].length))
+                pushPrograms('inc', programsForm.value.substr(i, inc[j].length));
                 i += inc[j].length;
                 flag = true;
                 break;
@@ -304,7 +303,7 @@ function getInstruction() {
         }
         for(var j = 0; j < patternDec.length; j++) {
             if (patternDec[j].test(programsForm.value.substr(i))) {
-                pushPrograms('dec', programsForm.value.substr(i, dec[j].length))
+                pushPrograms('dec', programsForm.value.substr(i, dec[j].length));
                 i += dec[j].length;
                 flag = true;
                 break;
